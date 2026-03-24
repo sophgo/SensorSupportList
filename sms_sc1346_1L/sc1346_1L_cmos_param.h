@@ -54,46 +54,6 @@ static const SC1346_1L_MODE_S g_astSC1346_1L_mode[SC1346_1L_MODE_NUM] = {
 			.u16Step = 1,
 		},
 	},
-	[SC1346_1L_MODE_720P30_WDR] = {
-		.name = "720p30wdr",
-		.astImg[0] = {
-			.stSnsSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-			.stWndRect = {
-				.s32X = 0,
-				.s32Y = 0,
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-			.stMaxSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-		},
-		.astImg[1] = {
-			.stSnsSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-			.stWndRect = {
-				.s32X = 0,
-				.s32Y = 0,
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-			.stMaxSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-		},
-		.f32MaxFps = 30,
-		.f32MinFps = 1.37, /* 750 * 30 / 0x3FFF*/
-		.u32HtsDef = 1280,
-		.u32VtsDef = 750,
-		.u16SexpMaxReg = 0x13E,
-	},
 	[SC1346_1L_MODE_720P60] = {
 		.name = "720p60",
 		.astImg[0] = {
@@ -135,45 +95,87 @@ static const SC1346_1L_MODE_S g_astSC1346_1L_mode[SC1346_1L_MODE_NUM] = {
 			.u16Step = 1,
 		},
 	},
-	[SC1346_1L_MODE_720P60_WDR] = {
-		.name = "720p60wdr",
+	[SC1346_1L_MODE_600P30] = {
+		.name = "600p30",
 		.astImg[0] = {
 			.stSnsSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
+				.u32Width = 1024,
+				.u32Height = 600,
 			},
 			.stWndRect = {
 				.s32X = 0,
 				.s32Y = 0,
-				.u32Width = 1280,
-				.u32Height = 720,
+				.u32Width = 1024,
+				.u32Height = 600,
 			},
 			.stMaxSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
+				.u32Width = 1024,
+				.u32Height = 600,
 			},
 		},
-		.astImg[1] = {
-			.stSnsSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-			.stWndRect = {
-				.s32X = 0,
-				.s32Y = 0,
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-			.stMaxSize = {
-				.u32Width = 1280,
-				.u32Height = 720,
-			},
-		},
-		.f32MaxFps = 60,
+		.f32MaxFps = 30,
 		.f32MinFps = 1.37, /* 750 * 30 / 0x3FFF*/
 		.u32HtsDef = 1280,
 		.u32VtsDef = 750,
-		.u16SexpMaxReg = 0x13E,
+		.stExp[0] = {
+			.u16Min = 2,
+			.u16Max = 750 - 6,
+			.u16Def = 100,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u16Min = 1024,
+			.u16Max = 32768,
+			.u16Def = 1024,
+			.u16Step = 1,
+		},
+		.stDgain[0] = {
+			.u16Min = 1024,
+			.u16Max = 4032,
+			.u16Def = 1024,
+			.u16Step = 1,
+		},
+	},
+	[SC1346_1L_MODE_600P60] = {
+		.name = "600p60",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1024,
+				.u32Height = 600,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 1024,
+				.u32Height = 600,
+			},
+			.stMaxSize = {
+				.u32Width = 1024,
+				.u32Height = 600,
+			},
+		},
+		.f32MaxFps = 60,
+		.f32MinFps = 2.74, /* 750 * 60 / 0x3FFF*/
+		.u32HtsDef = 1280,
+		.u32VtsDef = 750,
+		.stExp[0] = {
+			.u16Min = 2,
+			.u16Max = 750 - 6,
+			.u16Def = 100,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u16Min = 1024,
+			.u16Max = 32768,
+			.u16Def = 1024,
+			.u16Step = 1,
+		},
+		.stDgain[0] = {
+			.u16Min = 1024,
+			.u16Max = 4032,
+			.u16Def = 1024,
+			.u16Step = 1,
+		},
 	},
 };
 

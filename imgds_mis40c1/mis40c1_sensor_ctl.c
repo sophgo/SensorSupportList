@@ -446,6 +446,20 @@ static void mis40c1_linear_1440p20_1l_init(VI_PIPE ViPipe)
 	mis40c1_write_register(ViPipe, 0x3006,0x00);
 	mis40c1_write_register(ViPipe, 0x302d,0x00);
 
+	// 2564x1444
+	mis40c1_write_register(ViPipe, 0x3109,0x00);
+	mis40c1_write_register(ViPipe, 0x310a,0x00);
+	mis40c1_write_register(ViPipe, 0x310b,0x05);
+	mis40c1_write_register(ViPipe, 0x310c,0xa3);
+	mis40c1_write_register(ViPipe, 0x310d,0x00);
+	mis40c1_write_register(ViPipe, 0x310e,0x00);
+	mis40c1_write_register(ViPipe, 0x310f,0x0a);
+	mis40c1_write_register(ViPipe, 0x3110,0x03);
+	mis40c1_write_register(ViPipe, 0x3c1d,0x0a);
+	mis40c1_write_register(ViPipe, 0x3c1e,0x04);
+	mis40c1_write_register(ViPipe, 0x3c1f,0x05);
+	mis40c1_write_register(ViPipe, 0x3c20,0xa4);
+
 	mis40c1_default_reg_init(ViPipe);
 
 
@@ -774,6 +788,20 @@ static void mis40c1_linear_1440p20_2l_init(VI_PIPE ViPipe)
 
 	mis40c1_write_register(ViPipe, 0x3006,0x00);
 	mis40c1_write_register(ViPipe, 0x302d,0x00);
+
+	// 2564x1444
+	mis40c1_write_register(ViPipe, 0x3109,0x00);
+	mis40c1_write_register(ViPipe, 0x310a,0x00);
+	mis40c1_write_register(ViPipe, 0x310b,0x05);
+	mis40c1_write_register(ViPipe, 0x310c,0xa3);
+	mis40c1_write_register(ViPipe, 0x310d,0x00);
+	mis40c1_write_register(ViPipe, 0x310e,0x00);
+	mis40c1_write_register(ViPipe, 0x310f,0x0a);
+	mis40c1_write_register(ViPipe, 0x3110,0x03);
+	mis40c1_write_register(ViPipe, 0x3c1d,0x0a);
+	mis40c1_write_register(ViPipe, 0x3c1e,0x04);
+	mis40c1_write_register(ViPipe, 0x3c1f,0x05);
+	mis40c1_write_register(ViPipe, 0x3c20,0xa4);
 
 	mis40c1_default_reg_init(ViPipe);
 

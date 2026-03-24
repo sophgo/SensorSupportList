@@ -729,7 +729,7 @@ static CVI_VOID sensor_mirror_flip(VI_PIPE ViPipe, ISP_SNS_MIRRORFLIP_TYPE_E eSn
 	CMOS_CHECK_POINTER_VOID(pstSnsState);
 	/* Apply the setting on the fly  */
 	if (pstSnsState->bInit == CVI_TRUE && g_aeSc035GS_1L_MirrorFip[ViPipe] != eSnsMirrorFlip) {
-		sc035gs_1l_mirror_flip(ViPipe, eSnsMirrorFlip);
+		sc035gs_1L_mirror_flip(ViPipe, eSnsMirrorFlip);
 		g_aeSc035GS_1L_MirrorFip[ViPipe] = eSnsMirrorFlip;
 	}
 }

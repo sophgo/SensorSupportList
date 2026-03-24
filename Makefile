@@ -36,6 +36,9 @@ brigates_bg0808:
 cvsens_cv2003:
 	$(call MAKE_SENSOR, ${@})
 
+cvsens_cv2005:
+	$(call MAKE_SENSOR, ${@})
+
 gcore_gc02m1:
 	$(call MAKE_SENSOR, ${@})
 
@@ -54,6 +57,9 @@ gcore_gc2053_slave:
 gcore_gc2053_1L:
 	$(call MAKE_SENSOR, ${@})
 
+gcore_gc2083:
+	$(call MAKE_SENSOR, ${@})
+
 gcore_gc2093:
 	$(call MAKE_SENSOR, ${@})
 
@@ -64,6 +70,9 @@ gcore_gc4023:
 	$(call MAKE_SENSOR, ${@})
 
 gcore_gc4653:
+	$(call MAKE_SENSOR, ${@})
+
+gcore_gc4683:
 	$(call MAKE_SENSOR, ${@})
 
 gcore_gc8613:
@@ -82,6 +91,9 @@ nuc_nc021:
 	$(call MAKE_SENSOR, ${@})
 
 onsemi_ar2020:
+	$(call MAKE_SENSOR, ${@})
+
+ov_os02g10:
 	$(call MAKE_SENSOR, ${@})
 
 ov_os04a10:
@@ -153,6 +165,9 @@ sms_sc235hai:
 sms_sc401ai:
 	$(call MAKE_SENSOR, ${@})
 
+sms_sc431hai:
+	$(call MAKE_SENSOR, ${@})
+
 sms_sc438ai:
 	$(call MAKE_SENSOR, ${@})
 
@@ -168,6 +183,12 @@ sms_sc3332:
 sms_sc531ai_2L:
 	$(call MAKE_SENSOR, ${@})
 
+sms_sc533hai:
+	$(call MAKE_SENSOR, ${@})
+
+sms_sc535hai:
+	$(call MAKE_SENSOR, ${@})
+
 sms_sc635ai:
 	$(call MAKE_SENSOR, ${@})
 
@@ -175,6 +196,9 @@ sms_sc831hai:
 	$(call MAKE_SENSOR, ${@})
 
 sms_sc1330:
+	$(call MAKE_SENSOR, ${@})
+
+sms_sc1336_1L:
 	$(call MAKE_SENSOR, ${@})
 
 sms_sc1346_1L:
@@ -243,7 +267,13 @@ sony_imx327_fpga:
 sony_imx327_sublvds:
 	$(call MAKE_SENSOR, ${@})
 
+sony_imx334:
+	$(call MAKE_SENSOR, ${@})
+
 sony_imx335:
+	$(call MAKE_SENSOR, ${@})
+
+sony_imx376:
 	$(call MAKE_SENSOR, ${@})
 
 sony_imx412:
@@ -265,6 +295,9 @@ sony_imx678:
 	$(call MAKE_SENSOR, ${@})
 
 sony_imx900:
+	$(call MAKE_SENSOR, ${@})
+
+techpoint_tp2825:
 	$(call MAKE_SENSOR, ${@})
 
 techpoint_tp2860:

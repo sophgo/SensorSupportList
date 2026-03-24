@@ -92,10 +92,11 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	pstAeSnsDft->u32FullLinesStd = pstSnsState->u32FLStd;
 	pstAeSnsDft->u32FlickerFreq = 50 * 256;
 	pstAeSnsDft->u32FullLinesMax = SC202L_FULL_LINES_MAX;
-	pstAeSnsDft->u32HmaxTimes = (1000000) / (pstSnsState->u32FLStd * 120);
+	pstAeSnsDft->u32HmaxTimes = (1000000) / (pstSnsState->u32FLStd *
+		g_astSC202L_mode[pstSnsState->u8ImgMode].f32MaxFps);
 
 	pstAeSnsDft->stIntTimeAccu.enAccuType = AE_ACCURACY_LINEAR;
-	pstAeSnsDft->stIntTimeAccu.f32Accuracy = 0.0625; /* unit = 1/16 line */
+	pstAeSnsDft->stIntTimeAccu.f32Accuracy = 1;
 	pstAeSnsDft->stIntTimeAccu.f32Offset = 0;
 
 	pstAeSnsDft->stAgainAccu.enAccuType = AE_ACCURACY_TABLE;
@@ -109,7 +110,8 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	pstAeSnsDft->u32MaxISPDgainTarget = 2 << pstAeSnsDft->u32ISPDgainShift;
 
 	if (g_au32LinesPer500ms[ViPipe] == 0)
-		pstAeSnsDft->u32LinesPer500ms = pstSnsState->u32FLStd * 120 / 2;
+		pstAeSnsDft->u32LinesPer500ms = pstSnsState->u32FLStd *
+			g_astSC202L_mode[pstSnsState->u8ImgMode].f32MaxFps / 2;
 	else
 		pstAeSnsDft->u32LinesPer500ms = g_au32LinesPer500ms[ViPipe];
 	pstAeSnsDft->u32SnsStableFrame = 0;
@@ -136,7 +138,7 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 		pstAeSnsDft->u8AeCompensation = 40;
 		pstAeSnsDft->u32InitAESpeed = 64;
 		pstAeSnsDft->u32InitAETolerance = 5;
-		pstAeSnsDft->u32AEResponseFrame = 5;
+		pstAeSnsDft->u32AEResponseFrame = 4;
 		pstAeSnsDft->enAeExpMode = AE_EXP_HIGHLIGHT_PRIOR;
 		pstAeSnsDft->u32InitExposure = g_au32InitExposure[ViPipe] ? g_au32InitExposure[ViPipe] : 76151;
 
@@ -224,7 +226,7 @@ static CVI_S32 cmos_inttime_update(VI_PIPE ViPipe, CVI_U32 *u32IntTime)
 	if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
 		/* linear exposure reg range:
 		 * min : 1
-		 * max : 2 * vts - 8
+		 * max : vts - 4
 		 * step : 1
 		 */
 		u32MinTime = 1;
@@ -237,10 +239,7 @@ static CVI_S32 cmos_inttime_update(VI_PIPE ViPipe, CVI_U32 *u32IntTime)
 		pstSnsRegsInfo->astI2cData[LINEAR_EXP_H_ADDR].u32Data = (u32TmpIntTimeReg >> 12) & 0x0F;
 		pstSnsRegsInfo->astI2cData[LINEAR_EXP_M_ADDR].u32Data = (u32TmpIntTimeReg >> 4) & 0xFF;
 		pstSnsRegsInfo->astI2cData[LINEAR_EXP_L_ADDR].u32Data = ((u32TmpIntTimeReg & 0x0F) << 4);
-		// printf("u32IntTime %d, u32TmpIntTime %d, write reg 0x%x: 0x%x, reg 0x%x: 0x%x, reg 0x%x: 0x%x.\n", u32IntTime[0],
-		// 		u32TmpIntTime, SC202L_EXP_H_ADDR, pstSnsRegsInfo->astI2cData[LINEAR_EXP_H_ADDR].u32Data,
-		// 			SC202L_EXP_M_ADDR, pstSnsRegsInfo->astI2cData[LINEAR_EXP_M_ADDR].u32Data,
-		// 				SC202L_EXP_L_ADDR, pstSnsRegsInfo->astI2cData[LINEAR_EXP_L_ADDR].u32Data);
+
 	} else {
 		CVI_TRACE_SNS(CVI_DBG_ERR, "Not support WDR: %d\n", pstSnsState->enWDRMode);
 		return CVI_FAILURE;
@@ -263,110 +262,126 @@ struct gain_tbl_info_s {
 
 static struct gain_tbl_info_s AgainInfo[] = {
 	{
-		/* 1x -> 3.6x */
+		/* 1x -> 1.73x */
 		.gainMin = 1024,
-		.gainMax = 3680,
+		.gainMax = 1772,
 		.idxBase = 0,
 		.regGain = 0x00,
 	},
-	{	/* 3.6x -> 7.2x */
-		.gainMin = 3686,
-		.gainMax = 7328,
+	{
+		/* 1.73x -> 3.62x */
+		.gainMin = 1772,
+		.gainMax = 3707,
 		.idxBase = 64,
+		.regGain = 0x40,
+	},
+	{
+		/* 3.62x -> 7.24x */
+		.gainMin = 3707,
+		.gainMax = 7414,
+		.idxBase = 128,
 		.regGain = 0x48,
 	},
 	{
-		/* 7.2x -> 14.4x */
-		.gainMin = 7373,
-		.gainMax = 14597,
-		.idxBase = 128,
+		/* 7.24x -> 14.48x */
+		.gainMin = 7414,
+		.gainMax = 14828,
+		.idxBase = 192,
 		.regGain = 0x49,
 	},
 	{
-		/* 14.4x -> 28.8x */
-		.gainMin = 14720,
-		.gainMax = 29210,
-		.idxBase = 192,
+		/* 14.48x -> 28.96x */
+		.gainMin = 14828,
+		.gainMax = 29655,
+		.idxBase = 256,
 		.regGain = 0x4B,
 	},
 	{
-		/* 28.8x -> 57.6x */
-		.gainMin = 29491,
-		.gainMax = 58817,
-		.idxBase = 256,
+		/* 28.96x -> 57.92x */
+		.gainMin = 29655,
+		.gainMax = 58839,
+		.idxBase = 320,
 		.regGain = 0x4F,
 	},
 	{
-		/* 57.92x */
+		/* 57.92x (max) */
 		.gainMin = 59310,
 		.gainMax = 59310,
-		.idxBase = 320,
+		.idxBase = 383,
 		.regGain = 0x5F,
 	},
 };
 
 /*
  * Again_table，
- *   1x -> 3.6x   步长 1/64
- *   3.6x -> 7.2x   步长 1/64
- *   7.2x -> 14.4x 步长 1/64
- *   14.4x -> 28.8x 步长 1/64
- *   28.8x -> 57.6x 步长 1/64
+ *   1x -> 1.81x    步长 1/64
+ *   1.81x -> 3.62x 步长 1/64
+ *   3.62x -> 7.24x 步长 1/64
+ *   7.24x -> 14.48x 步长 1/64
+ *   14.48x -> 28.96x 步长 1/64
+ *   28.96x -> 57.92x 步长 1/64
  * 底数单位为 1x=1024，表中数值均为 round(1024 * 增益)。
  */
 static const uint32_t Again_table[] = {
-    /* 1x -> 3.6x (step = 1/64): 64 points */
-    1024, 1066, 1108, 1150, 1192, 1234, 1277, 1319,
-    1361, 1403, 1445, 1487, 1530, 1572, 1614, 1656,
-    1698, 1740, 1783, 1825, 1867, 1909, 1951, 1993,
-    2036, 2078, 2120, 2162, 2204, 2246, 2289, 2331,
-    2373, 2415, 2457, 2499, 2542, 2584, 2626, 2668,
-    2710, 2752, 2795, 2837, 2879, 2921, 2963, 3005,
-    3048, 3090, 3132, 3174, 3216, 3258, 3301, 3343,
-    3385, 3427, 3469, 3511, 3554, 3596, 3638, 3680,
+	/* 1x -> 1.81x (linear, 64 points) */
+	1024, 1037, 1050, 1063, 1077, 1090, 1103, 1116,
+	1129, 1142, 1156, 1169, 1182, 1195, 1208, 1221,
+	1235, 1248, 1261, 1274, 1287, 1300, 1314, 1327,
+	1340, 1353, 1366, 1379, 1393, 1406, 1419, 1432,
+	1445, 1458, 1472, 1485, 1498, 1511, 1524, 1537,
+	1551, 1564, 1577, 1590, 1603, 1616, 1630, 1643,
+	1656, 1669, 1682, 1695, 1709, 1722, 1735, 1748,
+	1761, 1774, 1788, 1801, 1814, 1827, 1840, 1853,
 
-    /* 3.6x -> 7.2x (step = 1/64): 64 points */
-    3686, 3744, 3802, 3860, 3917, 3975, 4033, 4091,
-    4149, 4206, 4264, 4322, 4380, 4438, 4495, 4553,
-    4611, 4669, 4727, 4784, 4842, 4900, 4958, 5016,
-    5073, 5131, 5189, 5247, 5305, 5362, 5420, 5478,
-    5536, 5594, 5651, 5709, 5767, 5825, 5883, 5940,
-    5998, 6056, 6114, 6172, 6229, 6287, 6345, 6403,
-    6461, 6518, 6576, 6634, 6692, 6750, 6807, 6865,
-    6923, 6981, 7039, 7096, 7154, 7212, 7270, 7328,
+	/* 1.81x -> 3.62x (linear, 64 points) */
+	1853, 1883, 1912, 1942, 1971, 2001, 2030, 2059,
+	2089, 2118, 2148, 2177, 2206, 2236, 2265, 2295,
+	2324, 2354, 2383, 2412, 2442, 2471, 2501, 2530,
+	2560, 2589, 2618, 2648, 2677, 2707, 2736, 2765,
+	2795, 2824, 2854, 2883, 2913, 2942, 2971, 3001,
+	3030, 3060, 3089, 3118, 3148, 3177, 3207, 3236,
+	3266, 3295, 3324, 3354, 3383, 3413, 3442, 3472,
+	3501, 3530, 3560, 3589, 3619, 3648, 3677, 3707,
 
-    /* 7.2x -> 14.4x (step = 1/64): 64 points */
-    7373, 7488, 7602, 7717, 7832, 7946, 8061, 8176,
-    8290, 8405, 8520, 8634, 8749, 8864, 8978, 9093,
-    9208, 9322, 9437, 9552, 9666, 9781, 9896, 10010,
-    10125, 10240, 10354, 10469, 10584, 10698, 10813, 10928,
-    11042, 11157, 11272, 11386, 11501, 11616, 11730, 11845,
-    11960, 12074, 12189, 12304, 12418, 12533, 12648, 12762,
-    12877, 12992, 13106, 13221, 13336, 13450, 13565, 13680,
-    13794, 13909, 14024, 14138, 14253, 14368, 14482, 14597,
+	/* 3.62x -> 7.24x (linear, 64 points) */
+	3707, 3766, 3825, 3883, 3942, 4001, 4060, 4119,
+	4178, 4236, 4295, 4354, 4413, 4472, 4531, 4589,
+	4648, 4707, 4766, 4825, 4884, 4943, 5001, 5060,
+	5119, 5178, 5237, 5296, 5354, 5413, 5472, 5531,
+	5590, 5649, 5707, 5766, 5825, 5884, 5943, 6002,
+	6060, 6119, 6178, 6237, 6296, 6355, 6413, 6472,
+	6531, 6590, 6649, 6708, 6767, 6825, 6884, 6943,
+	7002, 7061, 7120, 7178, 7237, 7296, 7355, 7414,
 
-    /* 14.4x -> 28.8x (step = 1/64): 64 points */
-    14720, 14950, 15180, 15410, 15640, 15870, 16100, 16330,
-    16560, 16790, 17020, 17250, 17480, 17710, 17940, 18170,
-    18400, 18630, 18860, 19090, 19320, 19550, 19780, 20010,
-    20240, 20470, 20700, 20930, 21160, 21390, 21620, 21850,
-    22080, 22310, 22540, 22770, 23000, 23230, 23460, 23690,
-    23920, 24150, 24380, 24610, 24840, 25070, 25300, 25530,
-    25760, 25990, 26220, 26450, 26680, 26910, 27140, 27370,
-    27600, 27830, 28060, 28290, 28520, 28750, 28980, 29210,
+	/* 7.24x -> 14.48x (linear, 64 points) */
+	7414, 7531, 7649, 7767, 7884, 8002, 8120, 8238,
+	8355, 8473, 8591, 8708, 8826, 8944, 9061, 9179,
+	9297, 9414, 9532, 9650, 9767, 9885, 10003, 10120,
+	10238, 10356, 10473, 10591, 10709, 10826, 10944, 11062,
+	11179, 11297, 11415, 11533, 11650, 11768, 11886, 12003,
+	12121, 12239, 12356, 12474, 12592, 12709, 12827, 12945,
+	13062, 13180, 13298, 13415, 13533, 13651, 13768, 13886,
+	14004, 14121, 14239, 14357, 14474, 14592, 14710, 14828,
 
-    /* 28.8x -> 57.6x (step = 1/64): 64 points */
-    29491, 29956, 30422, 30887, 31353, 31818, 32284, 32749,
-    33215, 33680, 34146, 34611, 35077, 35542, 36008, 36473,
-    36939, 37404, 37870, 38335, 38801, 39266, 39732, 40197,
-    40663, 41128, 41594, 42059, 42525, 42990, 43456, 43921,
-    44387, 44852, 45318, 45783, 46249, 46714, 47180, 47645,
-    48111, 48576, 49042, 49507, 49973, 50438, 50904, 51369,
-    51835, 52300, 52766, 53231, 53697, 54162, 54628, 55093,
-    55559, 56024, 56490, 56955, 57421, 57886, 58352, 58817,
+	/* 14.48x -> 28.96x (linear, 64 points) */
+	14828, 15063, 15298, 15534, 15769, 16004, 16240, 16475,
+	16710, 16946, 17181, 17416, 17652, 17887, 18123, 18358,
+	18593, 18829, 19064, 19299, 19535, 19770, 20005, 20241,
+	20476, 20711, 20947, 21182, 21418, 21653, 21888, 22124,
+	22359, 22594, 22830, 23065, 23300, 23536, 23771, 24006,
+	24242, 24477, 24713, 24948, 25183, 25419, 25654, 25889,
+	26125, 26360, 26595, 26831, 27066, 27301, 27537, 27772,
+	28008, 28243, 28478, 28714, 28949, 29184, 29420, 29655,
 
-	/*57.92x*/
-	59310,
+	/* 28.96x -> 57.92x (linear, 64 points) */
+	29655, 30126, 30596, 31067, 31538, 32009, 32479, 32950,
+	33421, 33891, 34362, 34833, 35304, 35774, 36245, 36716,
+	37186, 37657, 38128, 38599, 39069, 39540, 40011, 40481,
+	40952, 41423, 41894, 42364, 42835, 43306, 43776, 44247,
+	44718, 45189, 45659, 46130, 46601, 47071, 47542, 48013,
+	48484, 48954, 49425, 49896, 50366, 50837, 51308, 51779,
+	52249, 52720, 53191, 53662, 54132, 54603, 55074, 55544,
+	56015, 56486, 56957, 57427, 57898, 58369, 58839, 59310
 };
 
 static struct gain_tbl_info_s DgainInfo[3] = {
@@ -381,7 +396,7 @@ static struct gain_tbl_info_s DgainInfo[3] = {
 	{
 		.gainMin = 2048,
 		.gainMax = 4032,
-		.idxBase = 31,
+		.idxBase = 32,
 		.regGain = 0x01,
 		.regGainFineBase = 0x80,
 		.regGainFineStep = 0x04,
@@ -389,7 +404,7 @@ static struct gain_tbl_info_s DgainInfo[3] = {
 	{
 		.gainMin = 4096,
 		.gainMax = 4096,
-		.idxBase = 63,
+		.idxBase = 64,
 		.regGain = 0x03,
 		.regGainFineBase = 0x80,
 		.regGainFineStep = 0x04,
@@ -469,6 +484,7 @@ static CVI_S32 cmos_gains_update(VI_PIPE ViPipe, CVI_U32 *pu32Again, CVI_U32 *pu
 	CVI_U32 Aagain_val;
 	CVI_U32 Adgain_val;
 	CVI_U32 Dgain_val;
+	CVI_U32 again_table_size;
 
 	struct gain_tbl_info_s *info, *info_dgain;
 	int i, tbl_num;
@@ -481,6 +497,14 @@ static CVI_S32 cmos_gains_update(VI_PIPE ViPipe, CVI_U32 *pu32Again, CVI_U32 *pu
 
 	u32AgainIdx = pu32Again[0];
 	u32DgainIdx = pu32Dgain[0];
+
+	again_table_size = sizeof(Again_table) / sizeof(CVI_U32);
+	if (u32AgainIdx < (again_table_size - 1) && u32DgainIdx > 0) {
+		CVI_TRACE_SNS(CVI_DBG_ERR, "Invalid gain setting: u32AgainIdx=%u (max=%u), u32DgainIdx=%u. "
+			"u32DgainIdx should be 0 when u32AgainIdx hasn't reached maximum.\n",
+			u32AgainIdx, again_table_size - 1, u32DgainIdx);
+		return CVI_FAILURE;
+	}
 
 	/* linear mode */
 
@@ -496,13 +520,30 @@ static CVI_S32 cmos_gains_update(VI_PIPE ViPipe, CVI_U32 *pu32Again, CVI_U32 *pu
 	pstSnsRegsInfo->astI2cData[LINEAR_AGAIN_ADDR].u32Data = (info->regGain & 0xFF);
 	u32Again = Again_table[u32AgainIdx];
 	Aagain_val = info->gainMin;
-	info_dgain = &DgainInfo[0];
-	Adgain_val = (int)(((double)(u32Again) / (double)(Aagain_val) -1.0)* 32) * info_dgain->regGainFineStep + info_dgain->regGainFineBase;
+	{
+		double ratio = (double)u32Again / (double)Aagain_val;
+		double ratio_scaled;
+		int fine_steps;
+
+		if (ratio >= 2.0) {
+			info_dgain = &DgainInfo[1]; /* 2x ~ 4x */
+			ratio_scaled = ratio / 2.0;
+		} else {
+			info_dgain = &DgainInfo[0]; /* 1x ~ 2x */
+			ratio_scaled = ratio;
+		}
+
+		fine_steps = (int)((ratio_scaled - 1.0) * 32.0);
+		if (fine_steps < 0)
+			fine_steps = 0;
+		if (fine_steps > 31)
+			fine_steps = 31;
+
+		Adgain_val = info_dgain->regGainFineBase +
+			fine_steps * info_dgain->regGainFineStep;
+	}
 	pstSnsRegsInfo->astI2cData[LINEAR_DGAIN_ADDR].u32Data = (info_dgain->regGain & 0xFF);
 	pstSnsRegsInfo->astI2cData[LINEAR_DGAIN_FINE_ADDR].u32Data = (Adgain_val & 0xFF);
-	// printf("AgainIdx = %d, DgainIdx = %d, Again = %d, Aagain = %d, Adgain = %d, AGainDta = 0x%x, DgainData = 0x%x, DgainFine = 0x%x\n",
-	// 		u32AgainIdx, u32DgainIdx, u32Again, Aagain_val, Adgain_val, pstSnsRegsInfo->astI2cData[LINEAR_AGAIN_ADDR].u32Data,
-	// 			pstSnsRegsInfo->astI2cData[LINEAR_DGAIN_ADDR].u32Data, pstSnsRegsInfo->astI2cData[LINEAR_DGAIN_FINE_ADDR].u32Data);
 
 	if (u32DgainIdx > 0) {
 		/* find Dgain register setting. */
@@ -517,7 +558,6 @@ static CVI_S32 cmos_gains_update(VI_PIPE ViPipe, CVI_U32 *pu32Again, CVI_U32 *pu
 		pstSnsRegsInfo->astI2cData[LINEAR_DGAIN_ADDR].u32Data = (info->regGain & 0xFF);
 		Dgain_val = info->regGainFineBase + (u32DgainIdx - info->idxBase) * info->regGainFineStep;
 		pstSnsRegsInfo->astI2cData[LINEAR_DGAIN_FINE_ADDR].u32Data = (Dgain_val & 0xFF);
-		// printf("Dgain = %d, GainReg = 0x%x, DIG fine gain = 0x%x\n", Dgain_table[u32DgainIdx], (info->regGain & 0xFF), (Dgain_val & 0xFF));
 	}
 
 	return CVI_SUCCESS;

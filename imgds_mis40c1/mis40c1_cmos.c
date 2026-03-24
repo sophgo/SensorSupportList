@@ -76,6 +76,7 @@ static CVI_S32 cmos_get_wdr_size(VI_PIPE ViPipe, ISP_SNS_ISP_INFO_S *pstIspCfg);
 #define LINEAR_HOLD_ADDR		0x300C
 #define MIS40C1_VMAX_ADDR	0x3105
 #define MIS40C1_FLIP_MIRROR_ADDR 0x3007
+#define MIS40C1_UNUSED_ADDR 0x301c
 
 #define MIS40C1_RES_IS_1440P(w, h)      ((w) == 2560 && (h) == 1440)
 
@@ -510,18 +511,6 @@ _mismatch:
 	return 1;
 }
 
-static CVI_U32 sensor_cmp_cif_wdr(ISP_SNS_CIF_INFO_S *pstWdr1, ISP_SNS_CIF_INFO_S *pstWdr2)
-{
-	if (pstWdr1->wdr_manual.l2s_distance != pstWdr2->wdr_manual.l2s_distance)
-		goto _mismatch;
-	if (pstWdr1->wdr_manual.lsef_length != pstWdr2->wdr_manual.lsef_length)
-		goto _mismatch;
-
-	return 0;
-_mismatch:
-	return 1;
-}
-
 static CVI_S32 cmos_get_sns_regs_info(VI_PIPE ViPipe, ISP_SNS_SYNC_INFO_S *pstSnsSyncInfo)
 {
 	CVI_U32 i;
@@ -565,11 +554,11 @@ static CVI_S32 cmos_get_sns_regs_info(VI_PIPE ViPipe, ISP_SNS_SYNC_INFO_S *pstSn
 			pstI2c_data[LINEAR_DGAIN_ADDR_GB].u32RegAddr = MIS40C1_DGAIN_ADDR + 2;
 			pstI2c_data[LINEAR_DGAIN_ADDR_B].u32RegAddr   = MIS40C1_DGAIN_ADDR + 3;
 
-			pstI2c_data[LINEAR_LAUNCH].u32RegAddr     = LINEAR_HOLD_ADDR;
-			pstI2c_data[LINEAR_LAUNCH].u32Data = 0x01;
-
 			pstI2c_data[LINEAR_VMAX_0_ADDR].u32RegAddr     = MIS40C1_VMAX_ADDR;
 			pstI2c_data[LINEAR_VMAX_1_ADDR].u32RegAddr     = MIS40C1_VMAX_ADDR + 1;
+			pstI2c_data[LINEAR_LAUNCH].u32RegAddr     = LINEAR_HOLD_ADDR;
+			pstI2c_data[LINEAR_LAUNCH].u32Data = 0x01;
+			pstI2c_data[LINEAR_UNUSDE_ADDR].u32RegAddr     = MIS40C1_UNUSED_ADDR;
 			pstI2c_data[LINEAR_FLIP_MIRROR_ADDR].u32RegAddr     = MIS40C1_FLIP_MIRROR_ADDR;
 			break;
 		default:
@@ -599,10 +588,8 @@ static CVI_S32 cmos_get_sns_regs_info(VI_PIPE ViPipe, ISP_SNS_SYNC_INFO_S *pstSn
 		/* check update isp crop or not */
 		pstCfg0->ispCfg.need_update = (sensor_cmp_wdr_size(&pstCfg0->ispCfg, &pstCfg1->ispCfg) ?
 				CVI_TRUE : CVI_FALSE);
+		pstCfg0->ispCfg.u8DelayFrmNum = 1;
 
-		/* check update cif wdr manual or not */
-		pstCfg0->cifCfg.need_update = (sensor_cmp_cif_wdr(&pstCfg0->cifCfg, &pstCfg1->cifCfg) ?
-				CVI_TRUE : CVI_FALSE);
 	}
 
 	pstSnsRegsInfo->bConfig = CVI_FALSE;
@@ -668,6 +655,7 @@ static CVI_VOID sensor_mirror_flip(VI_PIPE ViPipe, ISP_SNS_MIRRORFLIP_TYPE_E eSn
 	ISP_SNS_REGS_INFO_S *pstSnsRegsInfo = CVI_NULL;
 	ISP_SNS_ISP_INFO_S *pstIspCfg0 = CVI_NULL;
 	CVI_U8 value = 0;
+	CVI_U8 state = 0;
 	CVI_U8 start_x, start_y;
 
 	MIS40C1_SENSOR_GET_CTX(ViPipe, pstSnsState);
@@ -679,32 +667,39 @@ static CVI_VOID sensor_mirror_flip(VI_PIPE ViPipe, ISP_SNS_MIRRORFLIP_TYPE_E eSn
 	if (pstSnsState->bInit == CVI_TRUE && g_aeMis40c1_MirrorFip[ViPipe] != eSnsMirrorFlip) {
 		switch (eSnsMirrorFlip) {
 		case ISP_SNS_NORMAL:
-			value |= 0;
-			start_x = 4;
-			start_y = 4;
+			value = 0x0;
+			start_x = 0;
+			start_y = 0;
+			state  = 0x2;
 			break;
 		case ISP_SNS_MIRROR:
-			value |= 0x01;
-			start_x = 5;
-			start_y = 4;
+			value = 0x1;
+			start_x = 1;
+			start_y = 0;
+			state  = 0x4;
 			break;
 		case ISP_SNS_FLIP:
-			value |= 0x02;
-			start_x = 4;
-			start_y = 5;
+			value = 0x2;
+			start_x = 0;
+			start_y = 1;
+			state  = 0x6;
 			break;
 		case ISP_SNS_MIRROR_FLIP:
-			value |= 0x03;
-			start_x = 5;
-			start_y = 5;
+			value = 0x3;
+			start_x = 1;
+			start_y = 1;
+			state  = 0x8;
 			break;
 		default:
 			return;
 		}
 
+		pstSnsRegsInfo->astI2cData[LINEAR_UNUSDE_ADDR].u32Data = state;
+		pstSnsRegsInfo->astI2cData[LINEAR_UNUSDE_ADDR].bDropFrm = 1;
+		pstSnsRegsInfo->astI2cData[LINEAR_UNUSDE_ADDR].u8DropFrmNum = 2;
+
 		pstSnsRegsInfo->astI2cData[LINEAR_FLIP_MIRROR_ADDR].u32Data = value;
-		pstSnsRegsInfo->astI2cData[LINEAR_FLIP_MIRROR_ADDR].bDropFrm = 1;
-		pstSnsRegsInfo->astI2cData[LINEAR_FLIP_MIRROR_ADDR].u8DropFrmNum = 1;
+		pstSnsRegsInfo->astI2cData[LINEAR_FLIP_MIRROR_ADDR].u8DelayFrmNum = 1;
 		pstIspCfg0->img_size[0].stWndRect.s32X = start_x;
 		pstIspCfg0->img_size[0].stWndRect.s32Y = start_y;
 		g_aeMis40c1_MirrorFip[ViPipe] = eSnsMirrorFlip;

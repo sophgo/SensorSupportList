@@ -1086,7 +1086,7 @@ static CVI_S32 sensor_rx_attr(VI_PIPE ViPipe, SNS_COMBO_DEV_ATTR_S *pstRxAttr)
 static CVI_S32 sensor_patch_rx_attr(VI_PIPE ViPipe, RX_INIT_ATTR_S *pstRxInitAttr)
 {
 	int i;
-	SNS_COMBO_DEV_ATTR_S* pstRxAttr = malloc(sizeof(SNS_COMBO_DEV_ATTR_S));
+	SNS_COMBO_DEV_ATTR_S* pstRxAttr = NULL;
 
 	if(!g_pastSC235HAIComboDevArray[ViPipe]) {
 		pstRxAttr = malloc(sizeof(SNS_COMBO_DEV_ATTR_S));

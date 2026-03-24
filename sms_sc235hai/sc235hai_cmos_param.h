@@ -157,11 +157,11 @@ static const SC235HAI_MODE_S g_astSC235HAI_mode[SC235HAI_MODE_NUM] = {
 		.f32MaxFps = 30,
 		.f32MinFps = 1, 		/* u32VtsDef * f32MaxFps / 0x7FFF*/
 		.u32HtsDef = 2200,
-		.u32VtsDef = 1125,
+		.u32VtsDef = 2250,
 		.stExp[0] = {
 			.u16Min = 1,
-			.u16Max = 1125 - 11,		/**u32VtsDef - 11*/
-			.u16Def = 1125 - 11,
+			.u16Max = 2250 - 11,		/**u32VtsDef - 11*/
+			.u16Def = 2250 - 11,
 			.u16Step = 1,
 		},
 		.stAgain[0] = {

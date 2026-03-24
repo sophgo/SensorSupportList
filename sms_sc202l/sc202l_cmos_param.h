@@ -37,9 +37,9 @@ static const SC202L_MODE_S g_astSC202L_mode[SC202L_MODE_NUM] = {
 		.u32VtsDef = 1125,
 		.stExp[0] = {
 			.u16Min = 1,
-			.u16Max = 2242,     /*{16’h320e,16’h320f}*2 - 8*/
-			.u16Def = 2240,
-			.u16Step = 2,
+			.u16Max = 1121,     /*{16’h320e,16’h320f} - 4*/
+			.u16Def = 1120,
+			.u16Step = 1,
 		},
 		.stAgain[0] = {
 			.u32Min = 1024,
@@ -78,9 +78,9 @@ static const SC202L_MODE_S g_astSC202L_mode[SC202L_MODE_NUM] = {
 		.u32VtsDef = 1125,
 		.stExp[0] = {
 			.u16Min = 1,
-			.u16Max = 2242,     /*{16’h320e,16’h320f}*2 - 8*/
-			.u16Def = 2240,
-			.u16Step = 2,
+			.u16Max = 1121,     /*{16’h320e,16’h320f} - 4*/
+			.u16Def = 1120,
+			.u16Step = 1,
 		},
 		.stAgain[0] = {
 			.u32Min = 1024,

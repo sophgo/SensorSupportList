@@ -17,8 +17,8 @@ static const MIS40C1_MODE_S g_astMIS40C1_mode[MIS40C1_MODE_NUM] = {
 		.name = "1440p20_2L",
 		.astImg[0] = {
 			.stSnsSize = {
-				.u32Width = 2560,
-				.u32Height = 1440,
+				.u32Width = 2564,
+				.u32Height = 1444,
 			},
 			.stWndRect = {
 				.s32X = 0,
@@ -27,8 +27,8 @@ static const MIS40C1_MODE_S g_astMIS40C1_mode[MIS40C1_MODE_NUM] = {
 				.u32Height = 1440,
 			},
 			.stMaxSize = {
-				.u32Width = 2560,
-				.u32Height = 1440,
+				.u32Width = 2564,
+				.u32Height = 1444,
 			},
 		},
 		.f32MaxFps = 20,
@@ -58,8 +58,8 @@ static const MIS40C1_MODE_S g_astMIS40C1_mode[MIS40C1_MODE_NUM] = {
 		.name = "1440p20_1L",
 		.astImg[0] = {
 			.stSnsSize = {
-				.u32Width = 2560,
-				.u32Height = 1440,
+				.u32Width = 2564,
+				.u32Height = 1444,
 			},
 			.stWndRect = {
 				.s32X = 0,
@@ -68,8 +68,8 @@ static const MIS40C1_MODE_S g_astMIS40C1_mode[MIS40C1_MODE_NUM] = {
 				.u32Height = 1440,
 			},
 			.stMaxSize = {
-				.u32Width = 2560,
-				.u32Height = 1440,
+				.u32Width = 2564,
+				.u32Height = 1444,
 			},
 		},
 		.f32MaxFps = 20,

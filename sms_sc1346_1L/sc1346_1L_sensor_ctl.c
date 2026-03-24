@@ -6,6 +6,8 @@
 
 static void sc1346_1L_linear_720p30_init(VI_PIPE ViPipe);
 static void sc1346_1L_linear_720p60_init(VI_PIPE ViPipe);
+static void sc1346_1L_linear_600p30_init(VI_PIPE ViPipe);
+static void sc1346_1L_linear_600p60_init(VI_PIPE ViPipe);
 
 CVI_U8 sc1346_1L_i2c_addr = 0x30;        /* I2C Address of SC1346_1L */
 const CVI_U32 sc1346_1L_addr_byte = 2;
@@ -121,10 +123,14 @@ void sc1346_1L_init(VI_PIPE ViPipe)
 
 	sc1346_1L_i2c_init(ViPipe);
 
-	if ((u8ImgMode == SC1346_1L_MODE_720P30) || (u8ImgMode == SC1346_1L_MODE_720P30_WDR))
+	if ((u8ImgMode == SC1346_1L_MODE_720P30))
 		sc1346_1L_linear_720p30_init(ViPipe);
-	else if ((u8ImgMode == SC1346_1L_MODE_720P60) || (u8ImgMode == SC1346_1L_MODE_720P60_WDR))
+	else if ((u8ImgMode == SC1346_1L_MODE_720P60))
 		sc1346_1L_linear_720p60_init(ViPipe);
+	else if ((u8ImgMode == SC1346_1L_MODE_600P30))
+		sc1346_1L_linear_600p30_init(ViPipe);
+	else if ((u8ImgMode == SC1346_1L_MODE_600P60))
+		sc1346_1L_linear_600p60_init(ViPipe);
 
 	g_pastSC1346_1L[ViPipe]->bInit = CVI_TRUE;
 	/*In Aliso,repeating the init sensor does not initialize global variables,manually set 0*/
@@ -356,5 +362,264 @@ static void sc1346_1L_linear_720p60_init(VI_PIPE ViPipe)
 	sc1346_1L_write_register(ViPipe, 0x0100, 0x01);
 
 	printf("ViPipe:%d,===SC1346_1L 720P 60fps 10bit LINE Init OK!===\n", ViPipe);
+
+}
+
+static void sc1346_1L_linear_600p30_init(VI_PIPE ViPipe)
+{
+	sc1346_1L_write_register(ViPipe, 0x0103, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x0100, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x36e9, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x37f9, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x301f, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x3106, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x3200, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3201, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x3202, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3203, 0x3e);
+	sc1346_1L_write_register(ViPipe, 0x3204, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3205, 0x87);
+	sc1346_1L_write_register(ViPipe, 0x3206, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x3207, 0x9d);
+	sc1346_1L_write_register(ViPipe, 0x3208, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3209, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x320a, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x320b, 0x58);
+	sc1346_1L_write_register(ViPipe, 0x3210, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3211, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3212, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3213, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3301, 0x06);
+	sc1346_1L_write_register(ViPipe, 0x3306, 0x50);
+	sc1346_1L_write_register(ViPipe, 0x3308, 0x0a);
+	sc1346_1L_write_register(ViPipe, 0x330a, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x330b, 0xda);
+	sc1346_1L_write_register(ViPipe, 0x330e, 0x0a);
+	sc1346_1L_write_register(ViPipe, 0x331e, 0x61);
+	sc1346_1L_write_register(ViPipe, 0x331f, 0xa1);
+	sc1346_1L_write_register(ViPipe, 0x3364, 0x1f);
+	sc1346_1L_write_register(ViPipe, 0x3390, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x3391, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x3392, 0x1f);
+	sc1346_1L_write_register(ViPipe, 0x3393, 0x30);
+	sc1346_1L_write_register(ViPipe, 0x3394, 0x30);
+	sc1346_1L_write_register(ViPipe, 0x3395, 0x30);
+	sc1346_1L_write_register(ViPipe, 0x33ad, 0x10);
+	sc1346_1L_write_register(ViPipe, 0x33b3, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x33f9, 0x50);
+	sc1346_1L_write_register(ViPipe, 0x33fb, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x33fc, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x33fd, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x349f, 0x03);
+	sc1346_1L_write_register(ViPipe, 0x34a6, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x34a7, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x34a8, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x34a9, 0x30);
+	sc1346_1L_write_register(ViPipe, 0x34aa, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x34ab, 0xe8);
+	sc1346_1L_write_register(ViPipe, 0x34ac, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x34ad, 0x0c);
+	sc1346_1L_write_register(ViPipe, 0x3630, 0xe2);
+	sc1346_1L_write_register(ViPipe, 0x3632, 0x76);
+	sc1346_1L_write_register(ViPipe, 0x3633, 0x33);
+	sc1346_1L_write_register(ViPipe, 0x3639, 0xf4);
+	sc1346_1L_write_register(ViPipe, 0x3641, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3670, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x3674, 0xe2);
+	sc1346_1L_write_register(ViPipe, 0x3675, 0xea);
+	sc1346_1L_write_register(ViPipe, 0x3676, 0xea);
+	sc1346_1L_write_register(ViPipe, 0x367c, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x367d, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x3690, 0x22);
+	sc1346_1L_write_register(ViPipe, 0x3691, 0x22);
+	sc1346_1L_write_register(ViPipe, 0x3692, 0x22);
+	sc1346_1L_write_register(ViPipe, 0x3698, 0x88);
+	sc1346_1L_write_register(ViPipe, 0x3699, 0x90);
+	sc1346_1L_write_register(ViPipe, 0x369a, 0xa1);
+	sc1346_1L_write_register(ViPipe, 0x369b, 0xc3);
+	sc1346_1L_write_register(ViPipe, 0x369c, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x369d, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x36a2, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x36a3, 0x0b);
+	sc1346_1L_write_register(ViPipe, 0x36a4, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x36d0, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x370f, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x3722, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x3724, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x3725, 0xc1);
+	sc1346_1L_write_register(ViPipe, 0x3728, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x37b0, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x37b1, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x37b2, 0x47);
+	sc1346_1L_write_register(ViPipe, 0x37b3, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x37b4, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x3903, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x3904, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3905, 0x8d);
+	sc1346_1L_write_register(ViPipe, 0x3907, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3908, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x391f, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x3933, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x3934, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x3937, 0x74);
+	sc1346_1L_write_register(ViPipe, 0x3939, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x393a, 0xd4);
+	sc1346_1L_write_register(ViPipe, 0x3e01, 0x2e);
+	sc1346_1L_write_register(ViPipe, 0x3e02, 0xa0);
+	sc1346_1L_write_register(ViPipe, 0x440e, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x4509, 0x20);
+	sc1346_1L_write_register(ViPipe, 0x450d, 0x28);
+	sc1346_1L_write_register(ViPipe, 0x5780, 0x66);
+	sc1346_1L_write_register(ViPipe, 0x578d, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x36e9, 0x20);
+	sc1346_1L_write_register(ViPipe, 0x37f9, 0x20);
+	sc1346_1L_write_register(ViPipe, 0x0100, 0x01);
+
+	sc1346_1L_default_reg_init(ViPipe);
+
+	sc1346_1L_write_register(ViPipe, 0x0100, 0x01);
+
+	printf("ViPipe:%d,===SC1346_1L 600P 30fps 10bit LINE Init OK!===\n", ViPipe);
+}
+
+/* 600P60 */
+static void sc1346_1L_linear_600p60_init(VI_PIPE ViPipe)
+{
+	sc1346_1L_write_register(ViPipe, 0x0103, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x0100, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x36e9, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x37f9, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x301f, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x3106, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x3200, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3201, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x3202, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3203, 0x3e);
+	sc1346_1L_write_register(ViPipe, 0x3204, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3205, 0x87);
+	sc1346_1L_write_register(ViPipe, 0x3206, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x3207, 0x9d);
+	sc1346_1L_write_register(ViPipe, 0x3208, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3209, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x320a, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x320b, 0x58);
+	sc1346_1L_write_register(ViPipe, 0x3210, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3211, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3212, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3213, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3301, 0x0b);
+	sc1346_1L_write_register(ViPipe, 0x3303, 0x10);
+	sc1346_1L_write_register(ViPipe, 0x3306, 0x50);
+	sc1346_1L_write_register(ViPipe, 0x3308, 0x0a);
+	sc1346_1L_write_register(ViPipe, 0x330a, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x330b, 0xda);
+	sc1346_1L_write_register(ViPipe, 0x330e, 0x0a);
+	sc1346_1L_write_register(ViPipe, 0x331e, 0x61);
+	sc1346_1L_write_register(ViPipe, 0x331f, 0xa1);
+	sc1346_1L_write_register(ViPipe, 0x3320, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3327, 0x08);
+	sc1346_1L_write_register(ViPipe, 0x3329, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x3364, 0x1f);
+	sc1346_1L_write_register(ViPipe, 0x3390, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x3391, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x3392, 0x1f);
+	sc1346_1L_write_register(ViPipe, 0x3393, 0x30);
+	sc1346_1L_write_register(ViPipe, 0x3394, 0xff);
+	sc1346_1L_write_register(ViPipe, 0x3395, 0xff);
+	sc1346_1L_write_register(ViPipe, 0x33ad, 0x10);
+	sc1346_1L_write_register(ViPipe, 0x33b3, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x33f9, 0x50);
+	sc1346_1L_write_register(ViPipe, 0x33fb, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x33fc, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x33fd, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x349f, 0x03);
+	sc1346_1L_write_register(ViPipe, 0x34a6, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x34a7, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x34a8, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x34a9, 0x30);
+	sc1346_1L_write_register(ViPipe, 0x34aa, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x34ab, 0xe8);
+	sc1346_1L_write_register(ViPipe, 0x34ac, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x34ad, 0x0c);
+	sc1346_1L_write_register(ViPipe, 0x3630, 0xe2);
+	sc1346_1L_write_register(ViPipe, 0x3632, 0x76);
+	sc1346_1L_write_register(ViPipe, 0x3633, 0x33);
+	sc1346_1L_write_register(ViPipe, 0x3639, 0xf4);
+	sc1346_1L_write_register(ViPipe, 0x3641, 0x28);
+	sc1346_1L_write_register(ViPipe, 0x3670, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x3674, 0xe2);
+	sc1346_1L_write_register(ViPipe, 0x3675, 0xea);
+	sc1346_1L_write_register(ViPipe, 0x3676, 0xea);
+	sc1346_1L_write_register(ViPipe, 0x367c, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x367d, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x3690, 0x22);
+	sc1346_1L_write_register(ViPipe, 0x3691, 0x22);
+	sc1346_1L_write_register(ViPipe, 0x3692, 0x32);
+	sc1346_1L_write_register(ViPipe, 0x3698, 0x88);
+	sc1346_1L_write_register(ViPipe, 0x3699, 0x8f);
+	sc1346_1L_write_register(ViPipe, 0x369a, 0xa0);
+	sc1346_1L_write_register(ViPipe, 0x369b, 0xd1);
+	sc1346_1L_write_register(ViPipe, 0x369c, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x369d, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x36a2, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x36a3, 0x0b);
+	sc1346_1L_write_register(ViPipe, 0x36a4, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x36d0, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x36eb, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x36ec, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x370f, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x3722, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x3724, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x3725, 0xc1);
+	sc1346_1L_write_register(ViPipe, 0x3727, 0x14);
+	sc1346_1L_write_register(ViPipe, 0x3728, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x37b0, 0x21);
+	sc1346_1L_write_register(ViPipe, 0x37b1, 0x21);
+	sc1346_1L_write_register(ViPipe, 0x37b2, 0x37);
+	sc1346_1L_write_register(ViPipe, 0x37b3, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x37b4, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x37fb, 0x31);
+	sc1346_1L_write_register(ViPipe, 0x37fc, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x3903, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x3904, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x3905, 0x8d);
+	sc1346_1L_write_register(ViPipe, 0x3907, 0x00);
+	sc1346_1L_write_register(ViPipe, 0x3908, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x391f, 0x41);
+	sc1346_1L_write_register(ViPipe, 0x3933, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x3934, 0x0a);
+	sc1346_1L_write_register(ViPipe, 0x3935, 0x01);
+	sc1346_1L_write_register(ViPipe, 0x3936, 0x55);
+	sc1346_1L_write_register(ViPipe, 0x3937, 0x71);
+	sc1346_1L_write_register(ViPipe, 0x3938, 0x72);
+	sc1346_1L_write_register(ViPipe, 0x3939, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x393a, 0xef);
+	sc1346_1L_write_register(ViPipe, 0x393b, 0x0f);
+	sc1346_1L_write_register(ViPipe, 0x393c, 0xcd);
+	sc1346_1L_write_register(ViPipe, 0x3e01, 0x2e);
+	sc1346_1L_write_register(ViPipe, 0x3e02, 0x80);
+	sc1346_1L_write_register(ViPipe, 0x440e, 0x02);
+	sc1346_1L_write_register(ViPipe, 0x4509, 0x25);
+	sc1346_1L_write_register(ViPipe, 0x450d, 0x28);
+	sc1346_1L_write_register(ViPipe, 0x4819, 0x09);
+	sc1346_1L_write_register(ViPipe, 0x481b, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x481d, 0x14);
+	sc1346_1L_write_register(ViPipe, 0x481f, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x4821, 0x0a);
+	sc1346_1L_write_register(ViPipe, 0x4823, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x4825, 0x04);
+	sc1346_1L_write_register(ViPipe, 0x4827, 0x05);
+	sc1346_1L_write_register(ViPipe, 0x4829, 0x08);
+	sc1346_1L_write_register(ViPipe, 0x5780, 0x66);
+	sc1346_1L_write_register(ViPipe, 0x578d, 0x40);
+	sc1346_1L_write_register(ViPipe, 0x36e9, 0x20);
+	sc1346_1L_write_register(ViPipe, 0x37f9, 0x20);
+	sc1346_1L_write_register(ViPipe, 0x0100, 0x01);
+
+	sc1346_1L_default_reg_init(ViPipe);
+
+	sc1346_1L_write_register(ViPipe, 0x0100, 0x01);
+
+	printf("ViPipe:%d,===SC1346_1L 600P 60fps 10bit LINE Init OK!===\n", ViPipe);
 
 }

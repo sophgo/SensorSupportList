@@ -637,8 +637,10 @@ static CVI_S32 cmos_get_isp_default(VI_PIPE ViPipe, ISP_CMOS_DEFAULT_S *pstDef)
 
 	memset(pstDef, 0, sizeof(ISP_CMOS_DEFAULT_S));
 
+#if defined (F10) || defined (F18)
 	memcpy(pstDef->stNoiseCalibration.CalibrationCoef,
 		&g_stIspNoiseCalibratio, sizeof(ISP_CMOS_NOISE_CALIBRATION_S));
+#endif
 
 	return CVI_SUCCESS;
 }
