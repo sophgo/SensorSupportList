@@ -53,6 +53,47 @@ static const CV2002_MODE_S g_astCV2002_mode[CV2002_MODE_NUM] = {
 			.u32Step = 64,
 		},
 	},
+	[CV2002_MODE_1280X720P30] = {
+		.name = "1280X720P30",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1288,
+				.u32Height = 728,
+			},
+			.stWndRect = {
+				.s32X = 4,
+				.s32Y = 4,
+				.u32Width = 1280,
+				.u32Height = 720,
+			},
+			.stMaxSize = {
+				.u32Width = 1288,
+				.u32Height = 728,
+			},
+		},
+		.f32MaxFps = 30,
+		.f32MinFps = 0.143, /* 2500 * 30 / (0x0FFFFF / 2)  */
+		.u32HtsDef = 624,	// hts_reg  (cv2002_coms.c里用不到, 随便写)
+		.u32VtsDef = 2500,	// vts_reg / 2	, (u32FLStd)
+		.stExp[0] = {		// SHUTTER0
+			.u16Min = 3,
+			.u16Max = 2500-1,	// FRAME_LENGTH - 2
+			.u16Def = 282,	// SHUTTER0_init_reg / 2
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 64,
+		},
+	},
 	[CV2002_MODE_1920X1080P30_WDR] = {
 		.name = "1920X1080P30_WDR",
 		.astImg[0] = {
@@ -99,6 +140,81 @@ static const CV2002_MODE_S g_astCV2002_mode[CV2002_MODE_NUM] = {
 		},
 		.stExp[1] = {		// SHUTTER1
 			.u16Min = 2,	 
+			.u16Max = 137,	// (HDR_RS1 - 4 + 2) / 4
+			.u16Def = 2,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stAgain[1] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 64,
+		},
+		.stDgain[1] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 64,
+		},
+	},
+	[CV2002_MODE_1280X720P30_WDR] = {
+		.name = "1280X720P30_WDR",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1288,
+				.u32Height = 728,
+			},
+			.stWndRect = {
+				.s32X = 4,
+				.s32Y = 4,
+				.u32Width = 1280,
+				.u32Height = 720,
+			},
+			.stMaxSize = {
+				.u32Width = 1288,
+				.u32Height = 720,
+			},
+		},
+		.astImg[1] = {
+			.stSnsSize = {
+				.u32Width = 1288,
+				.u32Height = 728,
+			},
+			.stWndRect = {
+				.s32X = 4,
+				.s32Y = 4,
+				.u32Width = 1280,
+				.u32Height = 720,
+			},
+			.stMaxSize = {
+				.u32Width = 1288,
+				.u32Height = 1728,
+			},
+		},
+		.f32MaxFps = 30,
+		.f32MinFps = 0.286, /* 1250 * 30 / (0x0FFFFF / 4) */
+		.u32HtsDef = 624,	//hts_reg (cv2002_coms.c里用不到, 随便写)
+		.u32VtsDef = 1250,	//vts_reg / 4 , (FPS)
+		.stExp[0] = {	    // SHUTTER0
+			.u16Min = 141,	// (HDR_RS1 + 10) / 4 ,  HDR_RS1 = 554
+			.u16Max = 1250 - 1,	// (FRAME_LENGTH - 4) / 4
+			.u16Def = 141,
+			.u16Step = 1,
+		},
+		.stExp[1] = {		// SHUTTER1
+			.u16Min = 2,
 			.u16Max = 137,	// (HDR_RS1 - 4 + 2) / 4
 			.u16Def = 2,
 			.u16Step = 1,

@@ -103,6 +103,9 @@ gcore_gc2083:
 gcore_gc2093:
 	$(call MAKE_SENSOR, ${@})
 
+gcore_gc2093_slave:
+	$(call MAKE_SENSOR, ${@})
+
 gcore_gc2145:
 	$(call MAKE_SENSOR, ${@})
 
@@ -116,6 +119,9 @@ gcore_gc4653:
 	$(call MAKE_SENSOR, ${@})
 
 gcore_gc4653_slave:
+	$(call MAKE_SENSOR, ${@})
+
+gcore_gc4683:
 	$(call MAKE_SENSOR, ${@})
 
 imgds_mis2008:
@@ -212,6 +218,15 @@ sms_sc500ai:
 	$(call MAKE_SENSOR, ${@})
 
 sms_sc501ai_2L:
+	$(call MAKE_SENSOR, ${@})
+
+sms_sc533hai:
+	$(call MAKE_SENSOR, ${@})
+
+sms_sc533hai_2L:
+	$(call MAKE_SENSOR, ${@})
+
+sms_sc533hai1_2L:
 	$(call MAKE_SENSOR, ${@})
 
 sms_sc3332:

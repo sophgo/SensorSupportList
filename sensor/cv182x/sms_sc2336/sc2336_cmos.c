@@ -64,6 +64,7 @@ static CVI_S32 cmos_get_wdr_size(VI_PIPE ViPipe, ISP_SNS_ISP_INFO_S *pstIspCfg);
 #define SC2336_AGAIN0_ADDR		0x3E09
 #define SC2336_DGAIN0_ADDR		0x3E06
 #define SC2336_VMAX_ADDR		0x320E
+#define SC2336_GROUP_HOLD_ADDR  0x3812
 #define SC2336_TABLE_END		0xFFFF
 
 #define SC2336_RES_IS_1080P(w, h)      ((w) <= 1920 && (h) <= 1080)
@@ -553,6 +554,8 @@ static CVI_S32 cmos_get_sns_regs_info(VI_PIPE ViPipe, ISP_SNS_SYNC_INFO_S *pstSn
 			break;
 		default:
 			//Linear Mode Regs
+			pstI2c_data[LINEAR_GROUP_HOLD_START].u32RegAddr = SC2336_GROUP_HOLD_ADDR;
+			pstI2c_data[LINEAR_GROUP_HOLD_START].u32Data = 0x0;
 			pstI2c_data[LINEAR_SHS1_0_ADDR].u32RegAddr = SC2336_SHS1_0_ADDR;
 			pstI2c_data[LINEAR_SHS1_1_ADDR].u32RegAddr = SC2336_SHS1_1_ADDR;
 			pstI2c_data[LINEAR_SHS1_2_ADDR].u32RegAddr = SC2336_SHS1_2_ADDR;
@@ -561,6 +564,8 @@ static CVI_S32 cmos_get_sns_regs_info(VI_PIPE ViPipe, ISP_SNS_SYNC_INFO_S *pstSn
 			pstI2c_data[LINEAR_DGAIN_1_ADDR].u32RegAddr = SC2336_DGAIN0_ADDR + 1;
 			pstI2c_data[LINEAR_VMAX_0_ADDR].u32RegAddr = SC2336_VMAX_ADDR;
 			pstI2c_data[LINEAR_VMAX_1_ADDR].u32RegAddr = SC2336_VMAX_ADDR + 1;
+			pstI2c_data[LINEAR_GROUP_HOLD_END].u32RegAddr = SC2336_GROUP_HOLD_ADDR;
+			pstI2c_data[LINEAR_GROUP_HOLD_START].u32Data = 0x30;
 
 			break;
 		}
@@ -579,6 +584,12 @@ static CVI_S32 cmos_get_sns_regs_info(VI_PIPE ViPipe, ISP_SNS_SYNC_INFO_S *pstSn
 				pstCfg0->snsCfg.need_update = CVI_TRUE;
 			}
 		}
+
+		if (pstCfg0->snsCfg.need_update) {
+			pstI2c_data[LINEAR_GROUP_HOLD_START].bUpdate = CVI_TRUE;
+			pstI2c_data[LINEAR_GROUP_HOLD_END].bUpdate = CVI_TRUE;
+		}
+
 		/* check update isp crop or not */
 		pstCfg0->ispCfg.need_update = (sensor_cmp_wdr_size(&pstCfg0->ispCfg, &pstCfg1->ispCfg) ?
 				CVI_TRUE : CVI_FALSE);

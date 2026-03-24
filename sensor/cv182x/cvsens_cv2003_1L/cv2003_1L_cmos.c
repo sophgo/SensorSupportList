@@ -84,6 +84,7 @@ static CVI_S32 cmos_get_wdr_size(VI_PIPE ViPipe, ISP_SNS_ISP_INFO_S *pstIspCfg);
 #define CV2003_1L_FLIP_MIRROR_ADDR		0x3028
 
 #define CV2003_1L_RES_IS_1080P(w, h)      ((w) == 1920 && (h) == 1080)
+#define CV2003_1L_RES_IS_720P(w, h)      ((w) == 1280 && (h) == 720)
 
 static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSnsDft)
 {
@@ -689,9 +690,11 @@ static CVI_S32 cmos_set_image_mode(VI_PIPE ViPipe, ISP_CMOS_SENSOR_IMAGE_MODE_S 
 
 	if (pstSensorImageMode->f32Fps <= 30) {
 		if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
-			if (CV2003_1L_RES_IS_1080P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height))
+			if (CV2003_1L_RES_IS_1080P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
 				u8SensorImageMode = CV2003_1L_MODE_1920X1080P30;
-			else {
+			} else if (CV2003_1L_RES_IS_720P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
+				u8SensorImageMode = CV2003_1L_MODE_1280X720P30;
+			} else {
 				CVI_TRACE_SNS(CVI_DBG_ERR, "Not support! Width:%d, Height:%d, Fps:%f, WDRMode:%d\n",
 					      pstSensorImageMode->u16Width,
 					      pstSensorImageMode->u16Height,

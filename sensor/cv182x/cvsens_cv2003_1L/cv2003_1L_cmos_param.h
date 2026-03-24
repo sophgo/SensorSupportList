@@ -53,6 +53,47 @@ static const CV2003_1L_MODE_S g_astCV2003_1L_mode[CV2003_1L_MODE_NUM] = {
 			.u32Step = 64,
 		},
 	},
+	[CV2003_1L_MODE_1280X720P30] = {
+		.name = "1280X720P30",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1288,
+				.u32Height = 728,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 1280,
+				.u32Height = 720,
+			},
+			.stMaxSize = {
+				.u32Width = 1288,
+				.u32Height = 728,
+			},
+		},
+		.f32MaxFps = 30,
+		.f32MinFps = 0.064, /* 1125 * 30 / (0x0FFFFF / 2)  */
+		.u32HtsDef = 720,	//hts_reg
+		.u32VtsDef = 1125,	//vts_reg / 2
+		.stExp[0] = {
+			.u16Min = 4,
+			.u16Max = 1125-2,
+			.u16Def = 4,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16384,
+			.u32Def = 1024,
+			.u32Step = 64,
+		},
+	},
 };
 
 

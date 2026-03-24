@@ -12,7 +12,6 @@
 #include "gc2083_cmos_ex.h"
 
 static void gc2083_linear_1080p30_init(VI_PIPE ViPipe);
-static void gc2083_wdr_1080p30_init(VI_PIPE ViPipe);
 
 CVI_U8 gc2083_i2c_addr = 0x37;//0x6e
 const CVI_U32 gc2083_addr_byte = 2;
@@ -148,27 +147,11 @@ void gc2083_standby(VI_PIPE ViPipe)
 
 void gc2083_restart(VI_PIPE ViPipe)
 {
-	WDR_MODE_E enWDRMode;
-	CVI_U8     u8ImgMode;
-
-	enWDRMode   = g_pastGc2083[ViPipe]->enWDRMode;
-	u8ImgMode   = g_pastGc2083[ViPipe]->u8ImgMode;
-
-	if (enWDRMode == WDR_MODE_2To1_LINE) {
-		if (u8ImgMode == GC2083_MODE_1920X1080P30_WDR) {
-			gc2083_write_register(ViPipe, 0x03f9, 0x40);
-			usleep(1);
-			gc2083_write_register(ViPipe, 0x03f7, 0x01);
-			gc2083_write_register(ViPipe, 0x03fc, 0x8e);
-			gc2083_write_register(ViPipe, 0x003e, 0x91);
-		}
-	} else {
-		gc2083_write_register(ViPipe, 0x03f9, 0x42);
-		usleep(1);
-		gc2083_write_register(ViPipe, 0x03f7, 0x11);
-		gc2083_write_register(ViPipe, 0x03fc, 0x8e);
-		gc2083_write_register(ViPipe, 0x003e, 0x91);
-	}
+	gc2083_write_register(ViPipe, 0x03f9, 0x42);
+	usleep(1);
+	gc2083_write_register(ViPipe, 0x03f7, 0x11);
+	gc2083_write_register(ViPipe, 0x03fc, 0x8e);
+	gc2083_write_register(ViPipe, 0x003e, 0x91);
 
 	printf("%s...", __func__);
 }
@@ -238,22 +221,39 @@ int  gc2083_probe(VI_PIPE ViPipe)
 void gc2083_init(VI_PIPE ViPipe)
 {
 	WDR_MODE_E       enWDRMode;
-	CVI_U8            u8ImgMode;
+	CVI_BOOL         bInit;
+	CVI_U8           u8ImgMode;
 
-	enWDRMode   = g_pastGc2083[ViPipe]->enWDRMode;
-	u8ImgMode   = g_pastGc2083[ViPipe]->u8ImgMode;
+	bInit = g_pastGc2083[ViPipe]->bInit;
+	enWDRMode = g_pastGc2083[ViPipe]->enWDRMode;
+	u8ImgMode = g_pastGc2083[ViPipe]->u8ImgMode;
 
 	gc2083_i2c_init(ViPipe);
 
-	if (enWDRMode == WDR_MODE_2To1_LINE) {
-		if (u8ImgMode == GC2083_MODE_1920X1080P30_WDR) {
-			gc2083_wdr_1080p30_init(ViPipe);
+	/* When sensor first init, config all registers */
+	if (bInit == CVI_FALSE) {
+		if (enWDRMode == WDR_MODE_2To1_LINE) {
+			CVI_TRACE_SNS(CVI_DBG_ERR, "gc2083 wdr mode not support.\n");
+		} else {
+			if (u8ImgMode == GC2083_MODE_1920X1080P30) {
+				gc2083_linear_1080p30_init(ViPipe);
+			} else {
+				CVI_TRACE_SNS(CVI_DBG_ERR, "gc2083 unsupported img mode %u.\n", u8ImgMode);
+			}
 		}
-	} else {
-		gc2083_linear_1080p30_init(ViPipe);
 	}
-
-
+	/* When sensor switch mode(linear<->WDR or resolution), config different registers(if possible) */
+	else {
+		if (enWDRMode == WDR_MODE_2To1_LINE) {
+			CVI_TRACE_SNS(CVI_DBG_ERR, "gc2083 wdr mode not support.\n");
+		} else {
+			if (u8ImgMode == GC2083_MODE_1920X1080P30) {
+				gc2083_linear_1080p30_init(ViPipe);
+			} else {
+				CVI_TRACE_SNS(CVI_DBG_ERR, "gc2083 unsupported img mode %u.\n", u8ImgMode);
+			}
+		}
+	}
 	g_pastGc2083[ViPipe]->bInit = CVI_TRUE;
 }
 
@@ -406,9 +406,4 @@ static void gc2083_linear_1080p30_init(VI_PIPE ViPipe)
 	delay_ms(80);
 
 	printf("ViPipe:%d,===GC2083 1080P 30fps 10bit LINE Init OK!===\n", ViPipe);
-}
-
-static void gc2083_wdr_1080p30_init(VI_PIPE ViPipe)
-{
-	printf("ViPipe = %d\n", ViPipe);
 }

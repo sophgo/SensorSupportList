@@ -16,6 +16,7 @@
 #define CV2003_1L_CHIP_ID		0x0203
 
 static void CV2003_1L_linear_1080P30_init(VI_PIPE ViPipe);
+static void CV2003_1L_linear_720P30_init(VI_PIPE ViPipe);
 
 CVI_U8 cv2003_1l_i2c_addr = 0x36;
 const CVI_U32 cv2003_1l_addr_byte = 2;
@@ -200,8 +201,9 @@ void CV2003_1L_init(VI_PIPE ViPipe)
 
 	if (u8ImgMode == CV2003_1L_MODE_1920X1080P30) {
 		CV2003_1L_linear_1080P30_init(ViPipe);
+	} else if (u8ImgMode == CV2003_1L_MODE_1280X720P30) {
+		CV2003_1L_linear_720P30_init(ViPipe);
 	}
-	// }
 
 	g_pastCV2003_1L[ViPipe]->bInit = CVI_TRUE;
 }
@@ -280,4 +282,85 @@ static void CV2003_1L_linear_1080P30_init(VI_PIPE ViPipe)
 	CV2003_1L_write_register(ViPipe, 0x3000, 0x00);
 
 	printf("ViPipe:%d,===CV2003_1L 1080P 30fps 12bit LINEAR Init OK!===\n", ViPipe);
+}
+
+static void CV2003_1L_linear_720P30_init(VI_PIPE ViPipe)
+{
+	delay_ms(10);
+
+	//30fps
+	CV2003_1L_write_register(ViPipe, 0x3300, 0x03);
+	CV2003_1L_write_register(ViPipe, 0x3422, 0xBF);
+	CV2003_1L_write_register(ViPipe, 0x3401, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3440, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x3442, 0x00);
+	// CV2003_1L_write_register(ViPipe, 0x3460, 0x03);//drive capability
+	CV2003_1L_write_register(ViPipe, 0x3806, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3908, 0x5F);
+	CV2003_1L_write_register(ViPipe, 0x3909, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3929, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x3158, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x3159, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x315A, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x315B, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x35b3, 0x15);
+	CV2003_1L_write_register(ViPipe, 0x3148, 0x64);
+	CV2003_1L_write_register(ViPipe, 0x3031, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3118, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x3119, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x3670, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3679, 0x02);
+	CV2003_1L_write_register(ViPipe, 0x3330, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x320e, 0x02);
+	CV2003_1L_write_register(ViPipe, 0x3804, 0x10);
+	CV2003_1L_write_register(ViPipe, 0x35a1, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35a8, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35a9, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35aa, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35ab, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35ac, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35ad, 0x06);
+	CV2003_1L_write_register(ViPipe, 0x35ae, 0x07);
+	CV2003_1L_write_register(ViPipe, 0x35af, 0x07);
+	CV2003_1L_write_register(ViPipe, 0x333B, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x3338, 0x08);
+	CV2003_1L_write_register(ViPipe, 0x3339, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3144, 0x20);
+	CV2003_1L_write_register(ViPipe, 0x301c, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3030, 0x01);
+	CV2003_1L_write_register(ViPipe, 0x3020, 0xCA);
+	CV2003_1L_write_register(ViPipe, 0x3021, 0x08);
+	CV2003_1L_write_register(ViPipe, 0x3024, 0x80);
+	CV2003_1L_write_register(ViPipe, 0x3025, 0x02);
+	CV2003_1L_write_register(ViPipe, 0x3038, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3039, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x303A, 0x08);	//1288
+	CV2003_1L_write_register(ViPipe, 0x303B, 0x05);
+	CV2003_1L_write_register(ViPipe, 0x3034, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3035, 0x00);
+	CV2003_1L_write_register(ViPipe, 0x3036, 0xD8);	//728
+	CV2003_1L_write_register(ViPipe, 0x3037, 0x02);
+	CV2003_1L_write_register(ViPipe, 0x3908, 0x48);
+	CV2003_1L_write_register(ViPipe, 0x390A, 0x02);
+
+	CV2003_1L_write_register(ViPipe, 0x301C, 0x04); // WCROP_MODE
+	CV2003_1L_write_register(ViPipe, 0x303C, 0xb0); // Y_WCROP_STA_L
+	CV2003_1L_write_register(ViPipe, 0x303D, 0x00); // Y_WCROP_STA_H
+	CV2003_1L_write_register(ViPipe, 0x303E, 0xe0); // Y_WCROP_HEIGHT_L
+	CV2003_1L_write_register(ViPipe, 0x303F, 0x02); // Y_WCROP_HEIGHT_H
+	CV2003_1L_write_register(ViPipe, 0x3030, 0x01); // DCROP_MODE
+	CV2003_1L_write_register(ViPipe, 0x3038, 0x44); // X_CROP_STA_L
+	CV2003_1L_write_register(ViPipe, 0x3039, 0x01); // X_CROP_STA_H
+	CV2003_1L_write_register(ViPipe, 0x303A, 0x08); // X_CROP_WIDTH_L
+	CV2003_1L_write_register(ViPipe, 0x303B, 0x05); // X_CROP_WIDTH_H
+	CV2003_1L_write_register(ViPipe, 0x3034, 0x08); // Y_DCROP_STA_L
+	CV2003_1L_write_register(ViPipe, 0x3035, 0x00); // Y_DCROP_STA_H
+	CV2003_1L_write_register(ViPipe, 0x3036, 0xd8); // Y_DCROP_HEIGHT_L
+	CV2003_1L_write_register(ViPipe, 0x3037, 0x02); // Y_DCROP_HEIGHT_H
+
+	CV2003_1L_default_reg_init(ViPipe);
+	delay_ms(100);
+	CV2003_1L_write_register(ViPipe, 0x3000, 0x00);
+
+	printf("ViPipe:%d,===CV2003_1L 720P 30fps 12bit LINEAR Init OK!===\n", ViPipe);
 }
