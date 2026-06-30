@@ -25,6 +25,7 @@ sensor-$(CONFIG_SENSOR_GCORE_GC2053_1L)      += gcore_gc2053_1L
 sensor-$(CONFIG_SENSOR_GCORE_GC2083)         += gcore_gc2083
 sensor-$(CONFIG_SENSOR_GCORE_GC2093)         += gcore_gc2093
 sensor-$(CONFIG_SENSOR_GCORE_GC2093_SLAVE)   += gcore_gc2093_slave
+sensor-$(CONFIG_SENSOR_GCORE_GC20C3)         += gcore_gc20c3
 sensor-$(CONFIG_SENSOR_GCORE_GC2145)         += gcore_gc2145
 sensor-$(CONFIG_SENSOR_GCORE_GC2385_1L)      += gcore_gc2385_1L
 sensor-$(CONFIG_SENSOR_GCORE_GC4023)         += gcore_gc4023

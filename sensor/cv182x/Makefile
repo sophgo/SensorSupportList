@@ -106,6 +106,9 @@ gcore_gc2093:
 gcore_gc2093_slave:
 	$(call MAKE_SENSOR, ${@})
 
+gcore_gc20c3:
+	$(call MAKE_SENSOR, ${@})
+
 gcore_gc2145:
 	$(call MAKE_SENSOR, ${@})
 
