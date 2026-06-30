@@ -65,9 +65,9 @@ void mis40c1_default_reg_init(VI_PIPE ViPipe)
 	}
 }
 
-#define MIS40C1_CHIP_ID_HI_ADDR		0x3000
-#define MIS40C1_CHIP_ID_LO_ADDR		0x3001
-#define MIS40C1_CHIP_ID			0x2008
+#define MIS40C1_CHIP_ID_HI_ADDR		0x541d
+#define MIS40C1_CHIP_ID_LO_ADDR		0x541e
+#define MIS40C1_CHIP_ID			0x03fc
 
 int mis40c1_probe(VI_PIPE ViPipe)
 {
@@ -94,7 +94,7 @@ int mis40c1_probe(VI_PIPE ViPipe)
 
 	if (chip_id != MIS40C1_CHIP_ID) {
 		CVI_TRACE_SNS(CVI_DBG_ERR, "Sensor ID Mismatch! Use the wrong sensor??\n");
-		// return CVI_FAILURE;
+		return CVI_FAILURE;
 	}
 
 	return CVI_SUCCESS;

@@ -177,6 +177,88 @@ static const OS04A10_MODE_S g_astOs04a10_mode[OS04A10_MODE_NUM] = {
 			.u32Step = 1,
 		},
 	},
+	[OS04A10_MODE_1080P30_2L_10BIT] = {
+		.name = "1080p30_10bit",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stMaxSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+		},
+		.f32MaxFps = 30,
+		.f32MinFps = 1.03, /* 0x8ca * 30 / 0xFFFF */
+		.u32HtsDef = 1112,
+		.u32VtsDef = 2250,
+		.stExp[0] = {
+			.u16Min = 1,
+			.u16Max = 2250 - 8,
+			.u16Def = 500,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 68200,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16373,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+	},
+	[OS04A10_MODE_1080P60_2L_10BIT] = {
+		.name = "1080p60_10bit",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stMaxSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+		},
+		.f32MaxFps = 60,
+		.f32MinFps = 1.03, /* 0x465 * 60 / 0xFFFF */
+		.u32HtsDef = 1112,
+		.u32VtsDef = 1125,
+		.stExp[0] = {
+			.u16Min = 1,
+			.u16Max = 1125 - 8,
+			.u16Def = 500,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 68200,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16373,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+	},
 	[OS04A10_MODE_1440P30_WDR] = {
 		.name = "1440p30wdr",
 		.astImg[0] = {
@@ -217,6 +299,85 @@ static const OS04A10_MODE_S g_astOs04a10_mode[OS04A10_MODE_NUM] = {
 		.u32VtsDef = 1624,
 		.u32L2S_offset = 40,
 		.u32IspResTime = 49, /* ceil((u32Vts * f32MaxFps) / 1000); about 1ms*/
+		.u32VStart = 0,
+		.u32VEnd = 0x5ff,
+		.stExp[0] = {
+			.u16Min = 2,
+			.u16Max = 88,
+			.u16Def = 88,
+			.u16Step = 1,
+		},
+		.stExp[1] = {
+			.u16Min = 2,
+			.u16Max = 0x486 - 4 - 88,
+			.u16Def = 500,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 68200,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stAgain[1] = {
+			.u32Min = 1024,
+			.u32Max = 68200,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16373,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[1] = {
+			.u32Min = 1024,
+			.u32Max = 16373,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+	},
+	[OS04A10_MODE_1080P30_WDR] = {
+		.name = "1080p30wdr",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stMaxSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+		},
+		.astImg[1] = {
+			.stSnsSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stMaxSize = {
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+		},
+		.f32MaxFps = 30,
+		.f32MinFps = 0.7, /* 1536 * 30 / 0xFFFF */
+		.u32HtsDef = 1353,
+		.u32VtsDef = 1536,
+		.u32L2S_offset = 40,
+		.u32IspResTime = 46, /* ceil((u32Vts * f32MaxFps) / 1000); about 1ms */
 		.u32VStart = 0,
 		.u32VEnd = 0x5ff,
 		.stExp[0] = {

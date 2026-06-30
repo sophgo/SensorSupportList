@@ -94,6 +94,7 @@ static CVI_S32 cmos_get_wdr_size(VI_PIPE ViPipe, ISP_SNS_ISP_INFO_S *pstIspCfg);
 
 #define GC4683_RES_IS_1440P(w, h)      ((w) <= 2560 && (h) <= 1440)
 #define GC4683_RES_IS_720P(w, h)      ((w) == 1280 && (h) == 720)
+#define GC4683_RES_IS_1080P(w, h)	 ((w) == 1920 && (h) == 1080)
 
 static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSnsDft)
 {
@@ -639,9 +640,11 @@ static CVI_S32 cmos_set_image_mode(VI_PIPE ViPipe, ISP_CMOS_SENSOR_IMAGE_MODE_S 
 
 	if (pstSensorImageMode->f32Fps <= 60) {
 		if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
-			if (GC4683_RES_IS_1440P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height))
+			if (GC4683_RES_IS_1080P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
+				u8SensorImageMode = GC4683_MODE_1080P60;
+			} else if (GC4683_RES_IS_1440P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
 				u8SensorImageMode = GC4683_MODE_2560X1440P60;
-			else {
+			} else {
 				CVI_TRACE_SNS(CVI_DBG_ERR, "Not support! Width:%d, Height:%d, Fps:%f, WDRMode:%d\n",
 					      pstSensorImageMode->u16Width,
 					      pstSensorImageMode->u16Height,
@@ -660,7 +663,7 @@ static CVI_S32 cmos_set_image_mode(VI_PIPE ViPipe, ISP_CMOS_SENSOR_IMAGE_MODE_S 
 	} else {
 		if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
 			if (GC4683_RES_IS_720P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
-				u8SensorImageMode = GC4683_MODE_1280X720P60;
+				u8SensorImageMode = GC4683_MODE_1280X720P120;
 			} else {
 				CVI_TRACE_SNS(CVI_DBG_ERR, "Not support this Fps:%f\n", pstSensorImageMode->f32Fps);
 				return CVI_FAILURE;

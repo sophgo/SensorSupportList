@@ -94,35 +94,34 @@ void sc4336p_mirror_flip(VI_PIPE ViPipe, ISP_SNS_MIRRORFLIP_TYPE_E eSnsMirrorFli
 
 int sc4336p_probe(VI_PIPE ViPipe)
 {
-	//int nVal;
-	//CVI_U16 chip_id;
+	int nVal;
+	CVI_U16 chip_id;
 
-	//if (sc4336p_i2c_init(ViPipe) != CVI_SUCCESS)
-	//	return CVI_FAILURE;
+	if (sc4336p_i2c_init(ViPipe) != CVI_SUCCESS)
+		return CVI_FAILURE;
 
-	//delay_ms(5);
+	delay_ms(5);
 
-	//nVal = sc4336p_read_register(ViPipe, SC4336P_CHIP_ID_HI_ADDR);
-	//if (nVal < 0) {
-	//	CVI_TRACE_SNS(CVI_DBG_ERR, "read sensor id error.\n");
-	//	return nVal;
-	//}
-	//chip_id = (nVal & 0xFF) << 8;
-	//nVal = sc4336p_read_register(ViPipe, SC4336P_CHIP_ID_LO_ADDR);
-	//if (nVal < 0) {
-	//	CVI_TRACE_SNS(CVI_DBG_ERR, "read sensor id error.\n");
-	//	return nVal;
-	//}
-	//chip_id |= (nVal & 0xFF);
+	nVal = sc4336p_read_register(ViPipe, SC4336P_CHIP_ID_HI_ADDR);
+	if (nVal < 0) {
+		CVI_TRACE_SNS(CVI_DBG_ERR, "read sensor id error.\n");
+		return nVal;
+	}
+	chip_id = (nVal & 0xFF) << 8;
+	nVal = sc4336p_read_register(ViPipe, SC4336P_CHIP_ID_LO_ADDR);
+	if (nVal < 0) {
+		CVI_TRACE_SNS(CVI_DBG_ERR, "read sensor id error.\n");
+		return nVal;
+	}
+	chip_id |= (nVal & 0xFF);
 
-	//if (chip_id != SC4336P_CHIP_ID) {
-	//	CVI_TRACE_SNS(CVI_DBG_ERR, "Sensor ID Mismatch! Use the wrong sensor??\n");
-	//	return CVI_FAILURE;
-	//}
-	printf("%d\n", ViPipe);
+	if (chip_id != SC4336P_CHIP_ID) {
+		CVI_TRACE_SNS(CVI_DBG_ERR, "Sensor ID Mismatch! Use the wrong sensor??\n");
+		return CVI_FAILURE;
+	}
+
 	return CVI_SUCCESS;
 }
-
 
 void sc4336p_init(VI_PIPE ViPipe)
 {

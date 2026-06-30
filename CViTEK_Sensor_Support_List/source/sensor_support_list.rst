@@ -1,6 +1,23 @@
 CVITEK Sensor Support List
 ==================================================
 
+版本信息
+--------------------------------------------------
+
+.. list-table::
+   :widths: 20 30 50 20
+   :header-rows: 1
+
+   * - 文档版本
+     - 发布日期
+     - 更新记录
+     - 作者
+
+   * - |version|
+     - |release_date|
+     - 初始版本，添加传感器支持列表
+     - |author|
+
 法律声明
 --------------------------------------------------
 本数据手册包含北京晶视智能科技有限公司（下称"晶视智能"）的保密信息。未经授权，禁止使用或披露本数据手册中包含的信息。如您未经授权披露全部或部分保密信息，导致晶视智能遭受任何损失或损害，您应对因之产生的损失/损害承担责任。
@@ -2103,6 +2120,19 @@ This data sheet and All information contained herein is provided "As is" without
      -
      -
      - 16:9
+     - 1920*1080
+     - MIPI
+     - 60
+     - Linear
+     -
+     -
+     -
+
+   * -
+     -
+     -
+     -
+     - 16:9
      - 1280*720
      - MIPI
      - 120
@@ -2874,6 +2904,32 @@ This data sheet and All information contained herein is provided "As is" without
      - MIPI
      - 30
      - WDR
+     -
+     -
+     -
+
+   * - **Chengdu Microlight**
+     - **MIS40H1**
+     - **1/1.8**
+     - **2.9 um**
+     - **16:9**
+     - **2688*1520(Max Size)**
+     - **MIPI**
+     - **60(In Max Size)**
+     - **Support WDR**
+     - **Support Fsync**
+     -
+     - **在产**
+
+   * -
+     -
+     -
+     -
+     - 16:9
+     - 2560*1440
+     - MIPI
+     - 25
+     - Linear
      -
      -
      -

@@ -7,8 +7,19 @@
 # 【注意事项】module_name === project in conf.py, use \_ instead of _ if module name contains _
 module_name  := CVITEK_Sensor_Support_List
 output_file_prefix := CVITEK_Sensor_Support_List
+
+# -- 版本信息（统一管理）-------------------------------------------------
+VERSION := V1.0
+RELEASE_DATE := 2025-05-20
+AUTHOR := Shihuai.zhang
+
 LANG := zh
-pdf_name  = $(output_file_prefix)_$(LANG).pdf
+pdf_name  = $(output_file_prefix)_$(VERSION)_$(LANG).pdf
+
+# 导出环境变量供 conf.py 使用
+export VERSION
+export RELEASE_DATE
+export AUTHOR
 export LC_ALL=en_US.UTF-8
 
 # You can set these variables from the command line, and also

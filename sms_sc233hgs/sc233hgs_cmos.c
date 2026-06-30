@@ -144,8 +144,8 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	switch (pstSnsState->enWDRMode) {
 	default:
 	case WDR_MODE_NONE:   /*linear mode*/
-		pstAeSnsDft->f32Fps = g_astSC233HGS_mode[SC233HGS_MODE_1080P60].f32MaxFps;
-		pstAeSnsDft->f32MinFps = g_astSC233HGS_mode[SC233HGS_MODE_1080P60].f32MinFps;
+		pstAeSnsDft->f32Fps = g_astSC233HGS_mode[pstSnsState->u8ImgMode].f32MaxFps;
+		pstAeSnsDft->f32MinFps = g_astSC233HGS_mode[pstSnsState->u8ImgMode].f32MinFps;
 		pstAeSnsDft->au8HistThresh[0] = 0xd;
 		pstAeSnsDft->au8HistThresh[1] = 0x28;
 		pstAeSnsDft->au8HistThresh[2] = 0x60;
@@ -175,8 +175,8 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 		break;
 
 	case WDR_MODE_2To1_LINE:
-		pstAeSnsDft->f32Fps = g_astSC233HGS_mode[SC233HGS_MODE_1080P60_WDR].f32MaxFps;
-		pstAeSnsDft->f32MinFps = g_astSC233HGS_mode[SC233HGS_MODE_1080P60_WDR].f32MinFps;
+		pstAeSnsDft->f32Fps = g_astSC233HGS_mode[pstSnsState->u8ImgMode].f32MaxFps;
+		pstAeSnsDft->f32MinFps = g_astSC233HGS_mode[pstSnsState->u8ImgMode].f32MinFps;
 		pstAeSnsDft->au8HistThresh[0] = 0xC;
 		pstAeSnsDft->au8HistThresh[1] = 0x18;
 		pstAeSnsDft->au8HistThresh[2] = 0x60;

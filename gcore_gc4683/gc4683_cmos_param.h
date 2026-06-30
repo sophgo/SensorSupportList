@@ -54,7 +54,48 @@ static const GC4683_MODE_S g_astGc4683_mode[GC4683_MODE_NUM] = {
 			.u32Step = 64,
 		},
 	},
-	[GC4683_MODE_1280X720P60] = {
+	[GC4683_MODE_1080P60] = {
+		.name = "1080P60",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 2560,
+				.u32Height = 1440,
+			},
+			.stWndRect = {
+				.s32X = 320,
+				.s32Y = 180,
+				.u32Width = 1920,
+				.u32Height = 1080,
+			},
+			.stMaxSize = {
+				.u32Width = 2560,
+				.u32Height = 1440,
+			},
+		},
+		.f32MaxFps = 60,
+		.f32MinFps = 2.75, /* 1500 * 30 / 16383  */
+		.u32HtsDef = 550,
+		.u32VtsDef = 1600,
+		.stExp[0] = {
+			.u16Min = 1,
+			.u16Max = 1600 - 8,
+			.u16Def = 256,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 149344,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 16368,
+			.u32Def = 1024,
+			.u32Step = 64,
+		},
+	},
+	[GC4683_MODE_1280X720P120] = {
 		.name = "1280x720P120",
 		.astImg[0] = {
 			.stSnsSize = {

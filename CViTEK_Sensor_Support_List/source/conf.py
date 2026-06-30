@@ -19,12 +19,21 @@
 # 【参考格式】release = 'v1.3'
 # -- Project information -----------------------------------------------------
 
-project = 'CVITEK_Sensor_Support_List'
-release = 'v1.0'
-copyright = '2026, CVITEK'
-author = 'VIVO GROUP'
-
 import os, subprocess
+
+# 从 Makefile 导出的环境变量读取版本信息
+_version_env = os.getenv('VERSION', 'V1.0')
+_release_date_env = os.getenv('RELEASE_DATE', '2025-05-20')
+_author_env = os.getenv('AUTHOR', 'Shihuai.zhang')
+
+# 解析版本号（去掉 V 前缀，如 V1.0 -> 1.0）
+_version_num = _version_env.lstrip('V')
+
+project = 'CVITEK_Sensor_Support_List'
+release = _version_num
+copyright = '2025, CVITEK'
+author = _author_env
+
 command_line = "git branch | sed -n '/\* /s///p'"
 branch_str = u""
 try:
@@ -35,9 +44,19 @@ except subprocess.CalledProcessError as call_e:
     print(call_e.output.decode(encoding="utf-8"))
 
 # The short X.Y version
-version = os.getenv('BUILD_RELEASE_VERSION', branch_str)
+version = _version_num
 # The full version, including alpha/beta/rc tags
-release = os.getenv('BUILD_RELEASE_VERSION', branch_str)
+release = _version_num
+
+# 发布日期（用于 LaTeX 标题页）
+release_date = _release_date_env
+
+# RST 替换变量（用于文档中的版本号引用，实现统一管理）
+rst_epilog = f'''
+.. |version| replace:: {_version_env}
+.. |release_date| replace:: {_release_date_env}
+.. |author| replace:: {_author_env}
+'''
 
 # -- General configuration ---------------------------------------------------
 
@@ -134,36 +153,34 @@ numfig = True
 # 添加发版日期
 # 【参考格式】 \noindent \Large Release date: 2022-06-13 \par
 
-latex_maketitle = r'''
-\begin{titlepage}
+latex_maketitle = f'''
+\\begin{{titlepage}}
 
-\begin{center}
+\\begin{{center}}
 
-    \graphicspath{{../../}}
+    \\includegraphics[width=0.8\\textwidth]{{logo.png}}
 
-    \includegraphics[width=0.8\textwidth]{logo.png}
+    \\vspace*{{3cm}}
 
-    \vspace*{3cm}
+    \\Huge \\textbf{{ CVITEK Sensor Support List }} \\par
 
-    \Huge \textbf{ CVITEK Sensor Support List } \par
+    \\vspace*{{6cm}}
 
-    \vspace*{6cm}
+\\end{{center}}
 
-\end{center}
+\\noindent \\Large Version: {_version_num} \\par
 
-\noindent \Large Version: 1.0.0 \par
+\\vspace*{{2cm}}
 
-\vspace*{2cm}
+\\noindent \\Large Release date: {release_date} \\par
 
-\noindent \Large Release date: 2026/01 \par
+\\vspace*{{2cm}}
 
-\vspace*{2cm}
+\\noindent \\normalsize ©2025北京晶视智能科技有限公司\\
+\\noindent \\normalsize 本文件所含信息归北京晶视智能科技有限公司所有。\\
+\\noindent \\normalsize 未经授权，严禁全部或部分复制或披露该等信息。\\
 
-\noindent \normalsize ©2022北京晶视智能科技有限公司\\
-\noindent \normalsize 本文件所含信息归北京晶视智能科技有限公司所有。\\
-\noindent \normalsize 未经授权，严禁全部或部分复制或披露该等信息。\\
-
-\end{titlepage}
+\\end{{titlepage}}
 '''
 
 latex_engine = 'xelatex'
@@ -256,6 +273,8 @@ latex_elements = {
 }
 
 # latex_logo = '../../common/images/logo.png'
+# 复制 logo 文件到 latex 输出目录
+latex_additional_files = ['../../logo.png', '../../header_logo.png']
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,

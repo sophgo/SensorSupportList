@@ -641,7 +641,7 @@ static CVI_S32 cmos_set_wdr_mode(VI_PIPE ViPipe, CVI_U8 u8Mode)
 	case WDR_MODE_NONE:
 		pstSnsState->enWDRMode = WDR_MODE_NONE;
 		pstSnsState->u32FLStd = g_astSC431HAI_mode[pstSnsState->u8ImgMode].u32VtsDef;
-		syslog(LOG_INFO, "linear mode\n");
+		CVI_TRACE_SNS(CVI_DBG_INFO, "linear mode\n");
 		break;
 	default:
 		CVI_TRACE_SNS(CVI_DBG_ERR, "NOT support this mode!\n");
