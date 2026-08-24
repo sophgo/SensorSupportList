@@ -133,6 +133,9 @@ imgds_mis2008:
 imgds_mis2008_1L:
 	$(call MAKE_SENSOR, ${@})
 
+imgds_mis4001:
+	$(call MAKE_SENSOR, ${@})
+
 nextchip_n5:
 	$(call MAKE_SENSOR, ${@})
 
@@ -149,6 +152,9 @@ ov_os04c10:
 	$(call MAKE_SENSOR, ${@})
 
 ov_os08a20:
+	$(call MAKE_SENSOR, ${@})
+
+ov_os08c10:
 	$(call MAKE_SENSOR, ${@})
 
 ov_ov4689:

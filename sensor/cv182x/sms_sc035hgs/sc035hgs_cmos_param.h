@@ -54,6 +54,47 @@ static const SC035HGS_MODE_S g_astSC035HGS_mode[SC035HGS_MODE_NUM] = {
 			.u32Step = 1,
 		},
 	},
+	[SC035HGS_MODE_640X480P180] = {
+		.name = "480p180",
+		.astImg[0] = {
+			.stSnsSize = {
+				.u32Width = 640,
+				.u32Height = 480,
+			},
+			.stWndRect = {
+				.s32X = 0,
+				.s32Y = 0,
+				.u32Width = 640,
+				.u32Height = 480,
+			},
+			.stMaxSize = {
+				.u32Width = 640,
+				.u32Height = 480,
+			},
+		},
+		.f32MaxFps = 180,
+		.f32MinFps = 1.45, /* 528 * 180 / 0xFFFF */
+		.u32HtsDef = 852,
+		.u32VtsDef = 528,
+		.stExp[0] = {
+			.u16Min = 1,
+			.u16Max = 522 << 4,// (vts - 6) * 16
+			.u16Def = 400 << 4,
+			.u16Step = 1,
+		},
+		.stAgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 4096,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+		.stDgain[0] = {
+			.u32Min = 1024,
+			.u32Max = 8160,
+			.u32Def = 1024,
+			.u32Step = 1,
+		},
+	},
 };
 
 static ISP_CMOS_BLACK_LEVEL_S g_stIspBlcCalibratio = {
@@ -84,6 +125,10 @@ struct combo_dev_attr_s sc035hgs_rx_attr = {
 		.lane_id = {2, 0, 1, -1, -1},
 		.wdr_mode = CVI_MIPI_WDR_MODE_NONE,
 		.pn_swap = {1, 1, 1, 0, 0},
+		.dphy = {
+			.enable = 1,
+			.hs_settle = 8,
+		},
 	},
 	.mclk = {
 		.cam = 0,

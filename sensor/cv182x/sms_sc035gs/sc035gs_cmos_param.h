@@ -84,6 +84,10 @@ struct combo_dev_attr_s sc035gs_rx_attr = {
 		.lane_id = {2, 0, 1, -1, -1},
 		.wdr_mode = CVI_MIPI_WDR_MODE_NONE,
 		.pn_swap = {1, 1, 1, 0, 0},
+	.dphy = {
+			.enable = 1,
+			.hs_settle = 8,
+		},
 	},
 	.mclk = {
 		.cam = 0,

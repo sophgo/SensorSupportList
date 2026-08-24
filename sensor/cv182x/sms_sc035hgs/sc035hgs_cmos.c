@@ -94,7 +94,7 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	pstAeSnsDft->u32FullLinesStd = pstSnsState->u32FLStd;
 	pstAeSnsDft->u32FlickerFreq = 50 * 256;
 	pstAeSnsDft->u32FullLinesMax = SC035HGS_FULL_LINES_MAX;
-	pstAeSnsDft->u32HmaxTimes = (1000000) / (pstSnsState->u32FLStd * 120);
+	pstAeSnsDft->u32HmaxTimes = (1000000) / (pstSnsState->u32FLStd * (CVI_U32)pstMode->f32MaxFps);
 
 	pstAeSnsDft->stIntTimeAccu.enAccuType = AE_ACCURACY_LINEAR;
 	pstAeSnsDft->stIntTimeAccu.f32Accuracy = 0.0625; /* unit = 1/16 line */
@@ -111,7 +111,7 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	pstAeSnsDft->u32MaxISPDgainTarget = 2 << pstAeSnsDft->u32ISPDgainShift;
 
 	if (g_au32LinesPer500ms[ViPipe] == 0)
-		pstAeSnsDft->u32LinesPer500ms = pstSnsState->u32FLStd * 120 / 2;
+		pstAeSnsDft->u32LinesPer500ms = pstSnsState->u32FLStd * (CVI_U32)pstMode->f32MaxFps / 2;
 	else
 		pstAeSnsDft->u32LinesPer500ms = g_au32LinesPer500ms[ViPipe];
 	pstAeSnsDft->u32SnsStableFrame = 0;
@@ -183,6 +183,7 @@ static CVI_S32 cmos_fps_set(VI_PIPE ViPipe, CVI_FLOAT f32Fps, AE_SENSOR_DEFAULT_
 
 	switch (pstSnsState->u8ImgMode) {
 	case SC035HGS_MODE_640X480P120:
+	case SC035HGS_MODE_640X480P180:
 		if ((f32Fps <= f32MaxFps) && (f32Fps >= f32MinFps)) {
 			u32VMAX = u32Vts * f32MaxFps / DIV_0_TO_1_FLOAT(f32Fps);
 		} else {
@@ -594,7 +595,8 @@ static CVI_S32 cmos_set_wdr_mode(VI_PIPE ViPipe, CVI_U8 u8Mode)
 
 	switch (u8Mode) {
 	case WDR_MODE_NONE:
-		pstSnsState->u8ImgMode = SC035HGS_MODE_640X480P120;
+		/* keep u8ImgMode chosen by cmos_set_image_mode (P120/P180);
+		   only switch WDR<->linear variant here if needed in future. */
 		pstSnsState->enWDRMode = WDR_MODE_NONE;
 		pstSnsState->u32FLStd = g_astSC035HGS_mode[pstSnsState->u8ImgMode].u32VtsDef;
 		syslog(LOG_INFO, "linear mode\n");
@@ -775,10 +777,12 @@ static CVI_S32 cmos_set_image_mode(VI_PIPE ViPipe, ISP_CMOS_SENSOR_IMAGE_MODE_S 
 	u8SensorImageMode = pstSnsState->u8ImgMode;
 	pstSnsState->bSyncInit = CVI_FALSE;
 
-	if (pstSensorImageMode->f32Fps <= 120) {
-		if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
-			if (SC035HGS_RES_IS_480P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
+	if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
+		if (SC035HGS_RES_IS_480P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height)) {
+			if (pstSensorImageMode->f32Fps <= 120) {
 				u8SensorImageMode = SC035HGS_MODE_640X480P120;
+			} else if (pstSensorImageMode->f32Fps <= 180) {
+				u8SensorImageMode = SC035HGS_MODE_640X480P180;
 			} else {
 				CVI_TRACE_SNS(CVI_DBG_ERR, "Not support! Width:%d, Height:%d, Fps:%f, WDRMode:%d\n",
 				       pstSensorImageMode->u16Width,
@@ -795,6 +799,13 @@ static CVI_S32 cmos_set_image_mode(VI_PIPE ViPipe, ISP_CMOS_SENSOR_IMAGE_MODE_S 
 			       pstSnsState->enWDRMode);
 			return CVI_FAILURE;
 		}
+	} else {
+		CVI_TRACE_SNS(CVI_DBG_ERR, "Not support! Width:%d, Height:%d, Fps:%f, WDRMode:%d\n",
+		       pstSensorImageMode->u16Width,
+		       pstSensorImageMode->u16Height,
+		       pstSensorImageMode->f32Fps,
+		       pstSnsState->enWDRMode);
+		return CVI_FAILURE;
 	}
 
 	if ((pstSnsState->bInit == CVI_TRUE) && (u8SensorImageMode == pstSnsState->u8ImgMode)) {
@@ -842,6 +853,12 @@ static CVI_S32 sensor_rx_attr(VI_PIPE ViPipe, SNS_COMBO_DEV_ATTR_S *pstRxAttr)
 	pstRxAttr->img_size.height = g_astSC035HGS_mode[pstSnsState->u8ImgMode].astImg[0].stSnsSize.u32Height;
 	if (pstSnsState->enWDRMode == WDR_MODE_NONE) {
 		pstRxAttr->mipi_attr.wdr_mode = CVI_MIPI_WDR_MODE_NONE;
+	}
+
+	/* 480P180 mode: 2-lane 10bit, 24M mclk */
+	if (pstSnsState->u8ImgMode == SC035HGS_MODE_640X480P180) {
+		pstRxAttr->mipi_attr.raw_data_type = RAW_DATA_10BIT;
+		pstRxAttr->mclk.freq = CAMPLL_FREQ_24M;
 	}
 
 	return CVI_SUCCESS;
@@ -1048,6 +1065,6 @@ ISP_SNS_OBJ_S stSnsSC035HGS_Obj = {
 	.pfnGetRxAttr		= sensor_rx_attr,
 	.pfnExpSensorCb		= cmos_init_sensor_exp_function,
 	.pfnExpAeCb		= cmos_init_ae_exp_function,
-	.pfnSnsProbe		= CVI_NULL,
+	.pfnSnsProbe		= sc035hgs_probe,
 };
 

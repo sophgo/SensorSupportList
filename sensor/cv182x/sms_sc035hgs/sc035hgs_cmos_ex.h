@@ -36,6 +36,7 @@ enum sc035hgs_linear_regs_e {
 
 typedef enum _SC035HGS_MODE_E {
 	SC035HGS_MODE_640X480P120 = 0,
+	SC035HGS_MODE_640X480P180,
 	SC035HGS_MODE_LINEAR_NUM,
 	SC035HGS_MODE_NUM
 } SC035HGS_MODE_E;
@@ -69,6 +70,7 @@ extern void sc035hgs_standby(VI_PIPE ViPipe);
 extern void sc035hgs_restart(VI_PIPE ViPipe);
 extern int  sc035hgs_write_register(VI_PIPE ViPipe, int addr, int data);
 extern int  sc035hgs_read_register(VI_PIPE ViPipe, int addr);
+extern int  sc035hgs_probe(VI_PIPE ViPipe);
 
 #ifdef __cplusplus
 #if __cplusplus
