@@ -1,4 +1,15 @@
-*.d
+# Generated at build time by gen_sensor_config.py (invoked from SConscript);
+# per the repo convention the Kconfig fragment is NOT committed.
+Kconfig.sensors
+
+# Python
+__pycache__/
+*.pyc
+
+# Build artifacts (objects normally land in the RT-Tree build dir anyway)
 *.o
-*.so
 *.a
+*.so
+*.d
+*.dep
+*.dwo
