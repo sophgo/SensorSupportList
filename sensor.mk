@@ -8,6 +8,7 @@ sensor-$(CONFIG_SENSOR_CVSENS_CV2003_1L_SLAVE)  += cvsens_cv2003_1L_slave
 sensor-$(CONFIG_SENSOR_CVSENS_CV2003_1L_SLAVE1) += cvsens_cv2003_1L_slave1
 sensor-$(CONFIG_SENSOR_CVSENS_CV4001)        += cvsens_cv4001
 sensor-$(CONFIG_SENSOR_CVSENS_CV4002)        += cvsens_cv4002
+sensor-$(CONFIG_SENSOR_CVSENS_CV4005)        += cvsens_cv4005
 sensor-$(CONFIG_SENSOR_BYD_BF2253L)          += byd_bf2253l
 sensor-$(CONFIG_SENSOR_GCORE_GC02M1)         += gcore_gc02m1
 sensor-$(CONFIG_SENSOR_GCORE_GC0308)         += gcore_gc0308

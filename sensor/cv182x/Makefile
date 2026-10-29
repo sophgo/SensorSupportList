@@ -58,6 +58,9 @@ cvsens_cv4001:
 cvsens_cv4002:
 	$(call MAKE_SENSOR, ${@})
 
+cvsens_cv4005:
+	$(call MAKE_SENSOR, ${@})
+
 gcore_gc02m1:
 	$(call MAKE_SENSOR, ${@})
 

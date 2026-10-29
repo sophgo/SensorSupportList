@@ -95,7 +95,7 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	pstAeSnsDft->u32FullLinesStd = pstSnsState->u32FLStd;
 	pstAeSnsDft->u32FlickerFreq = 50 * 256;
 	pstAeSnsDft->u32FullLinesMax = GC2093_SLAVE_FULL_LINES_MAX;
-	pstAeSnsDft->u32HmaxTimes = (1000000) / (pstSnsState->u32FLStd * 30);
+	pstAeSnsDft->u32HmaxTimes = (1000000) / (pstSnsState->u32FLStd * g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].f32MaxFps);
 
 	pstAeSnsDft->stIntTimeAccu.enAccuType = AE_ACCURACY_LINEAR;
 	pstAeSnsDft->stIntTimeAccu.f32Accuracy = 1;
@@ -110,7 +110,7 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	pstAeSnsDft->u32MaxISPDgainTarget = 2 << pstAeSnsDft->u32ISPDgainShift;
 
 	if (g_au32LinesPer500ms[ViPipe] == 0)
-		pstAeSnsDft->u32LinesPer500ms = pstSnsState->u32FLStd * 30 / 2;
+		pstAeSnsDft->u32LinesPer500ms = pstSnsState->u32FLStd * g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].f32MaxFps / 2;
 	else
 		pstAeSnsDft->u32LinesPer500ms = g_au32LinesPer500ms[ViPipe];
 #if 0
@@ -124,8 +124,8 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 	switch (pstSnsState->enWDRMode) {
 	default:
 	case WDR_MODE_NONE:   /*linear mode*/
-		pstAeSnsDft->f32Fps = g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30].f32MaxFps;
-		pstAeSnsDft->f32MinFps = g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30].f32MinFps;
+		pstAeSnsDft->f32Fps = g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].f32MaxFps;
+		pstAeSnsDft->f32MinFps = g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].f32MinFps;
 		pstAeSnsDft->au8HistThresh[0] = 0xd;
 		pstAeSnsDft->au8HistThresh[1] = 0x28;
 		pstAeSnsDft->au8HistThresh[2] = 0x60;
@@ -148,17 +148,17 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 		pstAeSnsDft->enAeExpMode = AE_EXP_HIGHLIGHT_PRIOR;
 		pstAeSnsDft->u32InitExposure = g_au32InitExposure[ViPipe] ?
 			g_au32InitExposure[ViPipe] :
-			g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30].stExp[0].u16Def;
+			g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].stExp[0].u16Def;
 
-		pstAeSnsDft->u32MaxIntTime = g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30].stExp[0].u16Max;
-		pstAeSnsDft->u32MinIntTime = g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30].stExp[0].u16Min;
+		pstAeSnsDft->u32MaxIntTime = g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].stExp[0].u16Max;
+		pstAeSnsDft->u32MinIntTime = g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].stExp[0].u16Min;
 		pstAeSnsDft->u32MaxIntTimeTarget = 65535;
 		pstAeSnsDft->u32MinIntTimeTarget = 1;
 		break;
 
 	case WDR_MODE_2To1_LINE:
-		pstAeSnsDft->f32Fps = g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30_WDR].f32MaxFps;
-		pstAeSnsDft->f32MinFps = g_astGc2093_Slave_mode[GC2093_SLAVE_MODE_1920X1080P30_WDR].f32MinFps;
+		pstAeSnsDft->f32Fps = g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].f32MaxFps;
+		pstAeSnsDft->f32MinFps = g_astGc2093_Slave_mode[pstSnsState->u8ImgMode].f32MinFps;
 		pstAeSnsDft->au8HistThresh[0] = 0xC;
 		pstAeSnsDft->au8HistThresh[1] = 0x18;
 		pstAeSnsDft->au8HistThresh[2] = 0x60;
@@ -908,6 +908,17 @@ static CVI_S32 cmos_set_image_mode(VI_PIPE ViPipe, ISP_CMOS_SENSOR_IMAGE_MODE_S 
 				      pstSnsState->enWDRMode);
 			return CVI_FAILURE;
 		}
+	} else if (pstSensorImageMode->f32Fps > 30) {
+		if (GC2093_SLAVE_RES_IS_1080P(pstSensorImageMode->u16Width, pstSensorImageMode->u16Height))
+			u8SensorImageMode = GC2093_SLAVE_MODE_1920X1080P60;
+		else {
+			CVI_TRACE_SNS(CVI_DBG_ERR, "Not support! Width:%d, Height:%d, Fps:%f, WDRMode:%d\n",
+						pstSensorImageMode->u16Width,
+						pstSensorImageMode->u16Height,
+						pstSensorImageMode->f32Fps,
+						pstSnsState->enWDRMode);
+			return CVI_FAILURE;
+			}
 	} else {
 		CVI_TRACE_SNS(CVI_DBG_ERR, "Not support this Fps:%f\n", pstSensorImageMode->f32Fps);
 		return CVI_FAILURE;
