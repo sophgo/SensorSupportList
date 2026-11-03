@@ -237,6 +237,9 @@ sms_sc2335:
 sms_sc2331:
 	$(call MAKE_SENSOR, ${@})
 
+sms_sc2336p:
+	$(call MAKE_SENSOR, ${@})
+
 sms_sc4336:
 	$(call MAKE_SENSOR, ${@})
 

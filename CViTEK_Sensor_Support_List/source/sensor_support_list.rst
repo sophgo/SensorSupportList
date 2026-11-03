@@ -43,6 +43,11 @@ CVITEK Sensor Support List
      - 新增 sony_imx586 sensor、新增gc05a3 sensor
      - songpei.lu
 
+   * - v2.1.5
+     - 2026-10-30
+     - 新增 sms_sc2336p sensor
+     - songpei.lu
+
 法律声明
 --------------------------------------------------
 本数据手册包含北京晶视智能科技有限公司（下称"晶视智能"）的保密信息。未经授权，禁止使用或披露本数据手册中包含的信息。如您未经授权披露全部或部分保密信息，导致晶视智能遭受任何损失或损害，您应对因之产生的损失/损害承担责任。
@@ -1098,6 +1103,32 @@ This data sheet and All information contained herein is provided "As is" without
      - **No WDR**
      -
      - **CSP41**
+     - **在产**
+
+   * -
+     -
+     -
+     -
+     - 16:9
+     - 1920*1080
+     - MIPI
+     - 30
+     - Linear
+     -
+     -
+     -
+
+   * -
+     - **SC2336P**
+     - **1/2.8**
+     - **2.9 um**
+     - **16:9**
+     - **1920*1080(Max Size)**
+     - **MIPI**
+     - **30(In Max Size)**
+     - **No WDR**
+     -
+     -
      - **在产**
 
    * -
