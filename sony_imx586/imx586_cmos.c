@@ -126,7 +126,7 @@ static CVI_S32 cmos_get_ae_default(VI_PIPE ViPipe, AE_SENSOR_DEFAULT_S *pstAeSns
 			g_astImx586_mode[pstSnsState->u8ImgMode].f32MaxFps / 2;
 	else
 		pstAeSnsDft->u32LinesPer500ms = g_au32LinesPer500ms[ViPipe];
-	pstAeSnsDft->u32SnsStableFrame = 8;
+	pstAeSnsDft->u32SnsStableFrame = 3;
 
 	switch (pstSnsState->enWDRMode) {
 	case WDR_MODE_NONE:   /*linear mode*/

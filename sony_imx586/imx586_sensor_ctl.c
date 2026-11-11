@@ -597,12 +597,8 @@ static void imx586_linear_8M60_init(VI_PIPE ViPipe)
     imx586_write_register(ViPipe, 0x4434, 0x01);
     imx586_write_register(ViPipe, 0x4435, 0xF0);
 
-    imx586_write_register(ViPipe, 0x0100, 0x01); /* Streaming */
     imx586_default_reg_init(ViPipe);
-
-    delay_ms(200);
     imx586_write_register(ViPipe, 0x0100, 0x01); /* Streaming */
-
 }
 
 static void imx586_linear_2M120_init(VI_PIPE ViPipe)
@@ -703,9 +699,6 @@ static void imx586_linear_2M120_init(VI_PIPE ViPipe)
     imx586_write_register(ViPipe, 0x4434, 0x00);
     imx586_write_register(ViPipe, 0x4435, 0xF8);
     imx586_write_register(ViPipe, 0x0350, 0x00);
-    imx586_write_register(ViPipe, 0x0100, 0x01);// - Streaming
     imx586_default_reg_init(ViPipe);
-
-    delay_ms(200);
     imx586_write_register(ViPipe, 0x0100, 0x01);// - Streaming
 }
